@@ -1,5 +1,6 @@
+import React from "react";
 import classNames from "classnames";
-import styles from "../../styles/Home.module.css";
+import styles from "../../styles/Register.module.css";
 
 type Props = {
   icon: React.ReactNode;

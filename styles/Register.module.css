@@ -1,0 +1,16 @@
+.tab {
+  display: flex;
+  color: var(--inactive);
+}
+
+.tab svg {
+  stroke: var(--inactive);
+}
+
+.tab.active {
+  color: black;
+}
+
+.tab.active svg {
+  stroke: black;
+}
