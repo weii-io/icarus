@@ -1,5 +1,7 @@
 # Icarus
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Icarus is an open-source project management web application that helps teams collaborate and track their work. The application is designed to be user-friendly, customizable, and scalable, making it suitable for teams of all sizes.
 
 ## Features
