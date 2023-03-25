@@ -305,18 +305,9 @@ const Register: NextPage = () => {
 
   return (
     <div>
-      <Head>
-        <title>Icarus - Project Management Tools for weii.io</title>
-        <meta
-          name="description"
-          content="Project Management Tools powered by weii.io"
-        />
-        {/* TODO: update fav icon */}
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Layout>
         <div className={styles.panel}>
-          <h1>icarus</h1>
+          <h1>Icarus</h1>
           <div>
             {tabs.map((tab, index) => (
               <Tab

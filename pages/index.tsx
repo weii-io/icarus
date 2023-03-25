@@ -1,21 +1,32 @@
 import type { NextPage } from "next";
 import React from "react";
 import { TypingTextEffect } from "../components";
+import Link from "next/link";
+import Head from "next/head";
 
 const Home: NextPage = () => {
   return (
     <div>
+      <Head>
+        <title>Icarus - Project Management Tools for weii.io</title>
+        <meta
+          name="description"
+          content="Project Management Tools powered by weii.io"
+        />
+        {/* TODO: update fav icon */}
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <TypingTextEffect
         style={{ fontSize: "4rem" }}
         text="Welcome to Icarus"
         typingSpeed={100}
       />
-      <a href="/register">
+      <Link href="/register">
         <h1>Create an account</h1>
-      </a>
-      <a href="/login">
+      </Link>
+      <Link href="/login">
         <h1>Already have an account</h1>
-      </a>
+      </Link>
     </div>
   );
 };
