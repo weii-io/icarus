@@ -3,6 +3,7 @@ import React from "react";
 import { TypingTextEffect } from "../components";
 import Link from "next/link";
 import Head from "next/head";
+import axios from "axios";
 
 const Home: NextPage = () => {
   return (
@@ -29,6 +30,29 @@ const Home: NextPage = () => {
       </Link>
     </div>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { req, res } = context;
+  try {
+    const { data } = await axios.get("/users/me", {
+      withCredentials: true,
+      headers: { cookie: req.headers.cookie },
+    });
+    if (data) {
+      res.writeHead(302, { Location: "/dashboard" });
+      res.end();
+      return {
+        props: {
+          user: data,
+        },
+      };
+    }
+  } catch (error) {
+    return {
+      props: {},
+    };
+  }
 };
 
 export default Home;

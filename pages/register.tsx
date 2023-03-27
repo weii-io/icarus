@@ -1,9 +1,13 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import styles from "../styles/Register.module.css";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import React from "react";
+import { NextRouter, useRouter } from "next/router";
+import { setCookie, parseCookies, destroyCookie } from "nookies";
+
 import { Tab } from "../components/register";
 import { Icon, Layout } from "../components";
+import styles from "../styles/Register.module.css";
+import { createUser } from "../api";
+import { ERROR } from "../enum";
 
 interface CreateUserPayload {
   firstName: string;
@@ -13,29 +17,11 @@ interface CreateUserPayload {
   confirmPassword: string;
 }
 
-interface CreateProjectPayload {
-  name: string;
-  description: string;
-  assigneeEmails: string[];
-}
-
-const InputChangeHandler = (
-  event: React.ChangeEvent<HTMLInputElement>,
-  setPayload: React.Dispatch<React.SetStateAction<any>>
-) => {
-  setPayload((payload: any) => {
-    return {
-      ...payload,
-      [event.target.id]: event.target.value,
-    };
-  });
-};
-
-const FormSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-};
-
-const Register: NextPage = () => {
+const Register: NextPage = ({
+  registrationError,
+}: {
+  registrationError?: string;
+}) => {
   const [activeTab, setActiveTab] = React.useState(0);
   const [createUserPayload, setCreateUserPayload] =
     React.useState<CreateUserPayload>({
@@ -45,14 +31,21 @@ const Register: NextPage = () => {
       password: "",
       confirmPassword: "",
     });
-  const [createProjectPayload, setCreateProjectPayload] =
-    React.useState<CreateProjectPayload>({
-      name: "",
-      description: "",
-      assigneeEmails: ["", "", ""],
-    });
 
   const form = React.useRef<HTMLFormElement>(null);
+  const router = useRouter();
+  const [showError, setShowError] = React.useState(false);
+
+  React.useEffect(() => {
+    if (registrationError) {
+      setShowError(true);
+      const timer = setTimeout(() => {
+        setShowError(false);
+        destroyCookie(null, ERROR.REGISTRATION_ERROR);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [registrationError]);
 
   const tabs = [
     {
@@ -84,6 +77,7 @@ const Register: NextPage = () => {
               <label htmlFor="firstName">First name</label>
               <input
                 required
+                autoComplete="given-name"
                 value={createUserPayload.firstName}
                 onChange={(event) =>
                   InputChangeHandler(event, setCreateUserPayload)
@@ -96,6 +90,7 @@ const Register: NextPage = () => {
               <label htmlFor="lastName">Last name</label>
               <input
                 required
+                autoComplete="family-name"
                 value={createUserPayload.lastName}
                 onChange={(event) =>
                   InputChangeHandler(event, setCreateUserPayload)
@@ -111,6 +106,8 @@ const Register: NextPage = () => {
                 onChange={(event) =>
                   InputChangeHandler(event, setCreateUserPayload)
                 }
+                required
+                autoComplete="email"
                 type="email"
                 id="email"
               />
@@ -139,10 +136,13 @@ const Register: NextPage = () => {
           <h1>choose a password</h1>
           <p>Must be at least 8 characters</p>
           <div>
+            {/* fix for [DOM Warning] Password forms should have (optionally hidden) username fields for accessibility" in console even with hidden username field */}
+            <input hidden type="text" autoComplete="username" />
             <div>
               <label htmlFor="password">Password</label>
               <input
                 required
+                autoComplete="new-password"
                 value={createUserPayload.password}
                 onChange={(event) =>
                   InputChangeHandler(event, setCreateUserPayload)
@@ -165,6 +165,7 @@ const Register: NextPage = () => {
               <label htmlFor="confirmPassword">Confirm password</label>
               <input
                 required
+                autoComplete="new-password"
                 pattern={`^${createUserPayload.password}$`}
                 onInvalid={(event) => {
                   if (event.currentTarget.validity.patternMismatch)
@@ -182,121 +183,17 @@ const Register: NextPage = () => {
               />
             </div>
             <button
+              type="submit"
               onClick={() => {
                 // validation before continuing to next tab
                 // validate password is not empty
                 // validate password is at least 8 characters
                 // validate password matches confirm password
-                if (form.current?.reportValidity()) setActiveTab(activeTab + 1);
+                if (!form.current?.reportValidity()) return false;
               }}
             >
-              Continue
+              Create account
             </button>
-          </div>
-        </>
-      ),
-    },
-    {
-      title: "Create your project",
-      description: "Get started with your first project",
-      form: (
-        <>
-          <h1>Create your project</h1>
-          <p>Get started with your first project</p>
-          <div>
-            <div>
-              <label htmlFor="name">Name</label>
-              <input
-                value={createProjectPayload.name}
-                type="text"
-                id="name"
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateProjectPayload)
-                }
-              />
-            </div>
-            <div>
-              <label htmlFor="description">Description</label>
-              <input
-                value={createProjectPayload.description}
-                type="text"
-                id="description"
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateProjectPayload)
-                }
-              />
-            </div>
-            <button onClick={() => setActiveTab(activeTab + 1)}>
-              Continue
-            </button>
-          </div>
-        </>
-      ),
-    },
-    {
-      title: "Invite your team",
-      description: "Start collaborating with your team",
-      form: (
-        <>
-          <h1>Invite your team</h1>
-          <p>Start collaborating with your team</p>
-          <div>
-            <div>
-              <label htmlFor="email">Email address</label>
-              <input
-                data-index={0}
-                value={createProjectPayload.assigneeEmails[0]}
-                onChange={(event) =>
-                  setCreateProjectPayload((payload) => {
-                    const index = Number(event.target.dataset.index);
-                    const newAssigneeEmails = [...payload.assigneeEmails];
-                    newAssigneeEmails[index] = event.target.value;
-                    return {
-                      ...payload,
-                      assigneeEmails: newAssigneeEmails,
-                    };
-                  })
-                }
-                type="email"
-                id="assigneeEmails[0]"
-              />
-              <input
-                data-index={1}
-                value={createProjectPayload.assigneeEmails[1]}
-                onChange={(event) =>
-                  setCreateProjectPayload((payload) => {
-                    const index = Number(event.target.dataset.index);
-                    const newAssigneeEmails = [...payload.assigneeEmails];
-                    newAssigneeEmails[index] = event.target.value;
-                    return {
-                      ...payload,
-                      assigneeEmails: newAssigneeEmails,
-                    };
-                  })
-                }
-                type="email"
-                id="assigneeEmails[1]"
-              />
-              <input
-                data-index={2}
-                value={createProjectPayload.assigneeEmails[2]}
-                onChange={(event) =>
-                  setCreateProjectPayload((payload) => {
-                    const index = Number(event.target.dataset.index);
-                    const newAssigneeEmails = [...payload.assigneeEmails];
-                    newAssigneeEmails[index] = event.target.value;
-                    return {
-                      ...payload,
-                      assigneeEmails: newAssigneeEmails,
-                    };
-                  })
-                }
-                type="email"
-                id="assigneeEmails[2]"
-              />
-              <button>Add more</button>
-            </div>
-            <button>complete sign up</button>
           </div>
         </>
       ),
@@ -333,15 +230,66 @@ const Register: NextPage = () => {
           </div>
         </div>
         <form
-          onSubmit={(event) => FormSubmitHandler(event)}
+          onSubmit={(event) =>
+            FormSubmitHandler(event, createUserPayload, router)
+          }
           className={styles.panel}
           ref={form}
         >
+          {showError && <p>{registrationError}</p>}
           {tabs[activeTab].form}
         </form>
       </Layout>
     </div>
   );
+};
+
+const InputChangeHandler = (
+  event: React.ChangeEvent<HTMLInputElement>,
+  setPayload: React.Dispatch<React.SetStateAction<any>>
+) => {
+  setPayload((payload: any) => {
+    return {
+      ...payload,
+      [event.target.id]: event.target.value,
+    };
+  });
+};
+
+const FormSubmitHandler = async (
+  event: React.FormEvent<HTMLFormElement>,
+  payload: any,
+  router: NextRouter
+) => {
+  event.preventDefault();
+  try {
+    const response = await createUser(payload);
+  } catch (context: any) {
+    console.log(context);
+    const { error, message, statusCode } = context.response.data;
+    if (statusCode === 400) {
+      // Validation error
+      // Create cookie with error message
+      setCookie(null, "registration_error", message, {
+        maxAge: 1 * 60 * 60, // 1 hour
+        path: "/",
+      });
+      // Redirect to register page
+      router.reload();
+    }
+  }
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const cookies = parseCookies(context);
+  const registrationError = cookies[ERROR.REGISTRATION_ERROR] || "";
+  return {
+    props: {
+      registrationError,
+    },
+  };
 };
 
 export default Register;
