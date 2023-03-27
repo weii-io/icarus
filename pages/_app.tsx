@@ -5,6 +5,7 @@ import axios from "axios";
 
 function MyApp({ Component, pageProps }: AppProps) {
   axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+  axios.defaults.withCredentials = true;
   return <Component {...pageProps} />;
 }
 

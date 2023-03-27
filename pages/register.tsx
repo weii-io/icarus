@@ -265,6 +265,7 @@ const FormSubmitHandler = async (
   try {
     const response = await createUser(payload);
   } catch (context: any) {
+    console.log(context);
     const { error, message, statusCode } = context.response.data;
     if (statusCode === 400) {
       // Validation error
