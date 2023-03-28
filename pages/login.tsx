@@ -16,7 +16,7 @@ const FormSubmitHandler = async (
     router.push("/dashboard");
   } catch (context: any) {
     const { message, statusCode } = context.response.data;
-    if (statusCode === 400) {
+    if (statusCode > 400) {
       // Validation error
       // Create cookie with error message
       setCookie(
