@@ -3,7 +3,7 @@ import { Project, User } from "../../interface";
 import { CreateProjectDto } from "../../api/dto";
 import { useRouter } from "next/router";
 import { Layout } from "../../components";
-import { createProject, getMe, getProjects } from "../../api";
+import { createProject, getMe, getProjects, logoutUser } from "../../api";
 import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
 
@@ -42,6 +42,14 @@ function Dashboard(props: Props) {
           <li>Tasks</li>
           <li>Setting</li>
         </ul>
+        <button
+          onClick={async () => {
+            const response = await logoutUser();
+            router.reload();
+          }}
+        >
+          logout
+        </button>
       </aside>
       <section>
         <div>

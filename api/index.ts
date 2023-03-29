@@ -6,3 +6,4 @@ export * from "./create-project";
 export * from "./get-project-by-id";
 export * from "./create-task";
 export * from "./get-tasks";
+export * from "./logout-user";
