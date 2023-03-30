@@ -1,6 +1,6 @@
 import axios from "axios";
-export const getProjectById = (id: number, cookie: string | undefined) => {
-  return axios.get(`/projects/${id}`, {
+export const getProjectById = (cookie: string | undefined, id: number) => {
+  return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/projects/${id}`, {
     withCredentials: true,
     headers: { cookie: cookie },
   });

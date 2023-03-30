@@ -6,10 +6,12 @@ import { Layout } from "../../components";
 import { createProject, getMe, getProjects, logoutUser } from "../../api";
 import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
+import { ProtectedRouteMiddleware } from "../../middleware";
 
 type Props = {
   user: User;
   projects: Project[];
+  cookie: string | undefined;
 };
 
 function Dashboard(props: Props) {
@@ -44,12 +46,19 @@ function Dashboard(props: Props) {
         </ul>
         <button
           onClick={async () => {
-            const response = await logoutUser();
+            const response = await logoutUser(props.cookie);
             router.reload();
           }}
         >
           logout
         </button>
+        {!props.user.githubProfile && (
+          <Link
+            href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`}
+          >
+            connect to github
+          </Link>
+        )}
       </aside>
       <section>
         <div>
@@ -64,7 +73,10 @@ function Dashboard(props: Props) {
               onSubmit={async (e) => {
                 e.preventDefault();
                 try {
-                  const response = await createProject(createProjectDto);
+                  const response = await createProject(
+                    props.cookie,
+                    createProjectDto
+                  );
                   resetCreateProjectDto();
                   createProjectDialog.current?.close();
                   router.replace(router.asPath);
@@ -124,22 +136,27 @@ function Dashboard(props: Props) {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const cookie = context.req.headers.cookie;
-  try {
-    const getMeResponse = await getMe(cookie);
-    const user = getMeResponse.data;
-    delete user.hash;
-
-    const getProjectsResponse = await getProjects(cookie);
-    const projects = getProjectsResponse.data;
-
-    return { props: { user, projects } };
-  } catch (error) {
-    context.res.writeHead(302, { Location: "/" });
-    context.res.end();
+  /** middleware */
+  const protectedRouteMiddleware = await ProtectedRouteMiddleware(context);
+  if (protectedRouteMiddleware.redirect) {
+    return protectedRouteMiddleware;
   }
 
-  return { props: {} };
+  /** logic */
+  const cookie = context.req.headers.cookie;
+  const getMeResponse = await getMe(cookie);
+  const user = getMeResponse.data;
+  delete user.hash;
+
+  const getProjectsResponse = await getProjects(cookie);
+  const projects = getProjectsResponse.data;
+  return {
+    props: {
+      user: user,
+      projects: projects,
+      cookie: context.req.headers.cookie,
+    },
+  };
 };
 
 export default Dashboard;

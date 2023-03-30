@@ -8,6 +8,7 @@ import { Icon, Layout } from "../components";
 import styles from "../styles/Register.module.css";
 import { createUser } from "../api";
 import { ERROR } from "../enum";
+import { PublicRouteMiddleware } from "../middleware";
 
 interface CreateUserPayload {
   firstName: string;
@@ -264,14 +265,23 @@ const FormSubmitHandler = async (
   event.preventDefault();
   try {
     const response = await createUser(payload);
+    setCookie(
+      null,
+      "registration_success",
+      "User created. Please login to continue",
+      {
+        maxAge: 1, // 1 hour
+        path: "/",
+      }
+    );
+    router.push("/login");
   } catch (context: any) {
-    console.log(context);
     const { error, message, statusCode } = context.response.data;
     if (statusCode === 400) {
       // Validation error
       // Create cookie with error message
       setCookie(null, "registration_error", message, {
-        maxAge: 1 * 60 * 60, // 1 hour
+        maxAge: 1,
         path: "/",
       });
       // Redirect to register page
@@ -283,6 +293,12 @@ const FormSubmitHandler = async (
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
+  /** middleware */
+  const publicRouteMiddleware = await PublicRouteMiddleware(context);
+  if (publicRouteMiddleware.redirect) {
+    return publicRouteMiddleware;
+  }
+
   const cookies = parseCookies(context);
   const registrationError = cookies[ERROR.REGISTRATION_ERROR] || "";
   return {

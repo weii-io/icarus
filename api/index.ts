@@ -7,3 +7,5 @@ export * from "./get-project-by-id";
 export * from "./create-task";
 export * from "./get-tasks";
 export * from "./logout-user";
+export * from "./get-github-access-token";
+export * from "./create-github-profile";
