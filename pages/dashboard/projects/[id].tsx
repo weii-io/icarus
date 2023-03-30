@@ -3,10 +3,12 @@ import { Project, Task } from "../../../interface";
 import { createTask, getProjectById, getTasks } from "../../../api";
 import { CreateTaskDto } from "../../../api/dto";
 import { useRouter } from "next/router";
+import { ProtectedRouteMiddleware } from "../../../middleware";
 
 type Props = {
   project: Project;
   tasks: Task[];
+  cookie: string | undefined;
 };
 
 function Project(props: Props) {
@@ -31,10 +33,6 @@ function Project(props: Props) {
   const [errorMessage, setErrorMessage] = React.useState("");
   const router = useRouter();
 
-  React.useEffect(() => {
-    console.log(props.tasks);
-  }, [props]);
-
   return (
     <div>
       <button onClick={() => createTaskDialog.current?.showModal()}>
@@ -47,7 +45,7 @@ function Project(props: Props) {
           onSubmit={async (e) => {
             e.preventDefault();
             try {
-              const response = await createTask(createTaskDto);
+              const response = await createTask(props.cookie, createTaskDto);
               resetCreateTaskDto();
               createTaskDialog.current?.close();
               router.replace(router.asPath);
@@ -127,6 +125,12 @@ function Project(props: Props) {
 }
 
 export const getServerSideProps = async (context: any) => {
+  /** middleware */
+  const protectedRouteMiddleware = await ProtectedRouteMiddleware(context);
+  if (protectedRouteMiddleware.redirect) {
+    return protectedRouteMiddleware;
+  }
+
   const { req } = context;
   try {
     const { data } = await getProjectById(
@@ -138,11 +142,15 @@ export const getServerSideProps = async (context: any) => {
       props: {
         project: data,
         tasks: tasks,
+        cookie: req.headers.cookie,
       },
     };
   } catch (error) {
     return {
-      props: {},
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   }
 };
