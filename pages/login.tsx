@@ -86,27 +86,25 @@ const FormSubmitHandler = async (
   payload: any
 ) => {
   event.preventDefault();
-  try {
-    const response = await loginUser(payload);
-    router.push("/dashboard");
-  } catch (context: any) {
-    const { message, statusCode } = context.response.data;
-    if (statusCode > 400) {
-      // Validation error
-      // Create cookie with error message
-      setCookie(
-        null,
-        "login_error",
-        Array.isArray(message) ? message.join(", ") : message,
-        {
-          maxAge: 1 * 60 * 60, // 1 hour
-          path: "/",
-        }
-      );
-      // Redirect to register page
-      router.reload();
-    }
+  const loginUserResponse = await loginUser(payload);
+  if (!loginUserResponse.ok) {
+    const { statusCode, message } = await loginUserResponse.json();
+    // Create cookie with error message
+    // Validation error
+    // Create cookie with error message
+    setCookie(
+      null,
+      "login_error",
+      Array.isArray(message) ? message.join(", ") : message,
+      {
+        maxAge: 1, // 1 hour
+        path: "/",
+      }
+    );
+    // Redirect to register page
+    router.reload();
   }
+  router.push("/dashboard");
 };
 
 const InputChangeHandler = (

@@ -4,16 +4,15 @@ import { getMe } from "../api";
 export const PublicRouteMiddleware = async (
   getServerSidePropsContext: GetServerSidePropsContext
 ) => {
-  try {
-    const { req } = getServerSidePropsContext;
-    const response = await getMe(req.headers.cookie);
+  const { req } = getServerSidePropsContext;
+  const getMeResponse = await getMe(req.headers.cookie);
+  // user is authorized
+  if (getMeResponse.ok)
     return {
       redirect: {
         destination: "/dashboard",
         permanent: false,
       },
     };
-  } catch (error) {
-    return {};
-  }
+  return {};
 };

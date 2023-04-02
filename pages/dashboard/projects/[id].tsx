@@ -133,14 +133,16 @@ export const getServerSideProps = async (context: any) => {
 
   const { req } = context;
   try {
-    const { data } = await getProjectById(
+    const getProjectByIdReponse = await getProjectById(
       context.params.id,
       req.headers.cookie
     );
-    const { data: tasks } = await getTasks(data.id, req.headers.cookie);
+    const project = await getProjectByIdReponse.json();
+    const getTasksResponse = await getTasks(project.id, req.headers.cookie);
+    const tasks = await getTasksResponse.json();
     return {
       props: {
-        project: data,
+        project: project,
         tasks: tasks,
         cookie: req.headers.cookie,
       },
