@@ -1,13 +1,16 @@
-import axios from "axios";
-import { GetServerSidePropsContext, GetStaticPropsContext } from "next";
 import { CreateProjectDto } from "./dto";
 
 export const createProject = async (
   cookie: string | undefined,
   dto: CreateProjectDto
 ) => {
-  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/projects`, dto, {
-    withCredentials: true,
-    headers: { cookie: cookie },
+  return fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookie as string,
+    },
+    body: JSON.stringify(dto),
   });
 };

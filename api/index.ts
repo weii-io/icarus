@@ -9,3 +9,5 @@ export * from "./get-tasks";
 export * from "./logout-user";
 export * from "./get-github-access-token";
 export * from "./create-github-profile";
+export * from "./delete-github-profile";
+export * from "./get-user-github-repositories";

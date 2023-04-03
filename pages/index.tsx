@@ -3,7 +3,6 @@ import React from "react";
 import { TypingTextEffect } from "../components";
 import Link from "next/link";
 import Head from "next/head";
-import axios from "axios";
 import { PublicRouteMiddleware } from "../middleware";
 
 const Home: NextPage = () => {

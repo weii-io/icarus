@@ -1,21 +1,20 @@
-import axios from "axios";
+import { getGithubUser } from "./get-github-user";
+
 export const createGithubProfile = async (
   cookie: string | undefined,
   accessToken: string
 ) => {
-  const { data } = await axios.get("https://api.github.com/user", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const getGithubUserResponse = await getGithubUser(accessToken);
+  const user = await getGithubUserResponse.json();
 
-  const { login: username } = data;
-  return axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/me/github-profile`,
-    {
-      username: username,
-      accessToken: accessToken,
+  const { login: username } = user;
+  return fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/github-profile`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookie as string,
     },
-    { withCredentials: true, headers: { cookie: cookie } }
-  );
+    body: JSON.stringify({ username, accessToken }),
+  });
 };
