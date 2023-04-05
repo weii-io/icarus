@@ -2,21 +2,31 @@ import React from "react";
 import { Project, User } from "../../interface";
 import { useRouter } from "next/router";
 import { Layout } from "../../components";
-import { deleteGithubProfile, getMe, getProjects, logoutUser } from "../../api";
+import {
+  createProject,
+  deleteGithubProfile,
+  getGithubOrganizationRepositories,
+  getMe,
+  getProjects,
+  getUserGithubOrganization,
+  getUserGithubRepositories,
+  logoutUser,
+} from "../../api";
 import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
 import { ProtectedRouteMiddleware } from "../../middleware";
 import { CreateProject } from "../../components/dashboard";
+import { CreateProjectDto } from "../../api/dto";
 
 type Props = {
   user: User;
   projects: Project[];
   cookie: string | undefined;
+  userGithubRepositories?: any[];
 };
 
 function Dashboard(props: Props) {
   const router = useRouter();
-
   return (
     <Layout>
       <aside>
@@ -54,12 +64,18 @@ function Dashboard(props: Props) {
       <section>
         <div>
           <h1>Projects</h1>
-          <CreateProject user={props.user} cookie={props.cookie} />
+          <CreateProject
+            formSubmitHandler={(payload: CreateProjectDto) =>
+              createProject(props.cookie, payload)
+            }
+            userGithubRepositories={props.userGithubRepositories}
+            githubProfile={props.user.githubProfile}
+          />
           <div>
             {props.projects.map((project) => {
               return (
                 <div key={project.id}>
-                  <Link href="/dashboard/projects/1">
+                  <Link href={`/dashboard/projects/${project.id}`}>
                     <h2>{project.name}</h2>
                   </Link>
                   <p>{project.description || "no description"}</p>
@@ -90,6 +106,44 @@ export const getServerSideProps = async (
 
   const getProjectsResponse = await getProjects(cookie);
   const projects = await getProjectsResponse.json();
+
+  if (me.githubProfile) {
+    // if user have a github profile
+    // get all the repos
+    const getUserGithubRepositoriesResponse = await getUserGithubRepositories(
+      me
+    );
+    const userGithubRepositories =
+      await getUserGithubRepositoriesResponse.json();
+    const getUserGithubOrganizationResponse = await getUserGithubOrganization(
+      me
+    );
+    const userGithubOrganizations =
+      await getUserGithubOrganizationResponse.json();
+
+    // reference: https://stackoverflow.com/a/37576787
+    const organizationRepositories = await Promise.all(
+      userGithubOrganizations.map(async (organization: any) => {
+        const getGithubOrganizationRepositoriesResponse =
+          await getGithubOrganizationRepositories(organization.login, me);
+        const githubOrganizationRepositories =
+          await getGithubOrganizationRepositoriesResponse.json();
+        return githubOrganizationRepositories;
+      })
+    );
+
+    return {
+      props: {
+        user: me,
+        projects: projects,
+        cookie: context.req.headers.cookie,
+        userGithubRepositories: [
+          ...userGithubRepositories,
+          ...organizationRepositories.flat(),
+        ],
+      },
+    };
+  }
 
   return {
     props: {

@@ -7,7 +7,7 @@ export const createGithubProfile = async (
   const getGithubUserResponse = await getGithubUser(accessToken);
   const user = await getGithubUserResponse.json();
 
-  const { login: username } = user;
+  const { login: username, organizations_url: organizationUrl } = user;
   return fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/github-profile`, {
     method: "POST",
     credentials: "include",
@@ -15,6 +15,6 @@ export const createGithubProfile = async (
       "Content-Type": "application/json",
       Cookie: cookie as string,
     },
-    body: JSON.stringify({ username, accessToken }),
+    body: JSON.stringify({ username, accessToken, organizationUrl }),
   });
 };

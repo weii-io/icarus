@@ -1,3 +1,4 @@
+import { GithubProfile } from "./github-profile";
 import { User } from "./user";
 
 export interface Project {
@@ -5,5 +6,7 @@ export interface Project {
   name: string;
   description?: string;
   owner: User;
-  owner_id?: number;
+  ownerId?: number;
+  githubRepoUrl?: string;
+  githubProfile: GithubProfile;
 }

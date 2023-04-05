@@ -58,6 +58,7 @@ function Login() {
             required
             onChange={(event) => InputChangeHandler(event, setLoginPayload)}
             type="email"
+            autoComplete="email"
             name="email"
             id="email"
             placeholder="Email"
@@ -70,6 +71,7 @@ function Login() {
             onChange={(event) => InputChangeHandler(event, setLoginPayload)}
             type="password"
             id="password"
+            autoComplete="current-password"
             name="password"
             placeholder="Password"
           />

@@ -1,53 +1,72 @@
 import React from "react";
 import { CreateProjectDto } from "../../api/dto";
 import { useRouter } from "next/router";
-import { createProject, getUserGithubRepositories } from "../../api";
-import { User } from "../../interface";
+import { GithubProfile } from "../../interface";
+import { refreshPage } from "../../utils";
 
 type Props = {
-  cookie: string | undefined;
-  user: User;
+  userGithubRepositories?: any[];
+  formSubmitHandler: (dto: CreateProjectDto) => Promise<Response>;
+  githubProfile: GithubProfile;
 };
 
 export const CreateProject: React.FC<Props> = (props: Props) => {
-  const createProjectDialog = React.useRef<HTMLDialogElement>(null);
   const [showError, setShowError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
 
-  const createProjectForm = React.useRef<HTMLFormElement>(null);
   const router = useRouter();
+
+  const createProjectForm = React.useRef<HTMLFormElement>(null);
+  const createProjectDialog = React.useRef<HTMLDialogElement>(null);
+
   const [createProjectDto, setCreateProjectDto] =
     React.useState<CreateProjectDto>({
       name: "",
       description: "",
+      githubProfileId: undefined,
+      githubRepoUrl: undefined,
     });
 
-  const resetCreateProjectDto = () => {
+  const resetForm = React.useCallback(() => {
+    // clear all the input in the form
+    createProjectForm.current?.reset();
+    // reset the state
     setCreateProjectDto({
       name: "",
       description: "",
+      githubProfileId: undefined,
+      githubRepoUrl: undefined,
     });
-  };
+  }, []);
 
-  const [userGithubRepositories, setUserGithubRepositories] = React.useState<
-    any[]
-  >([]);
+  const onChangeRepositorySelect = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    if (e.target.value === "") {
+      setCreateProjectDto((dto) => {
+        return {
+          ...dto,
+          githubRepoUrl: undefined,
+        };
+      });
+      return;
+    }
 
-  React.useEffect(() => {
-    if (props.user.githubProfile) {
-      // TODO: factorize this
-      getUserGithubRepositories(props.user).then((response) => {
-        if (!response.ok) {
-          setErrorMessage("Unable to fetch github repositories");
-          setShowError(true);
-        }
+    const selectedRepo = props.userGithubRepositories?.find(
+      (repo) => repo.url === e.target.value
+    );
 
-        response.json().then((data) => {
-          setUserGithubRepositories(data);
-        });
+    if (selectedRepo) {
+      setCreateProjectDto((dto) => {
+        return {
+          ...dto,
+          name: selectedRepo.name,
+          description: selectedRepo.description,
+          githubRepoUrl: selectedRepo.url,
+        };
       });
     }
-  }, [props]);
+  };
 
   return (
     <div>
@@ -60,15 +79,18 @@ export const CreateProject: React.FC<Props> = (props: Props) => {
           ref={createProjectForm}
           onSubmit={async (e) => {
             e.preventDefault();
-            try {
-              await createProject(props.cookie, createProjectDto);
-              resetCreateProjectDto();
-              createProjectDialog.current?.close();
-              router.replace(router.asPath);
-            } catch (context: any) {
+            const createProjectResponse = await props.formSubmitHandler({
+              ...createProjectDto,
+              githubProfileId: props.githubProfile.id,
+            });
+            if (!createProjectResponse.ok) {
               setShowError(true);
               setErrorMessage("Unable to create project");
+              return;
             }
+            resetForm();
+            createProjectDialog.current?.close();
+            refreshPage(router);
           }}
         >
           <label htmlFor="projectName">Project Name</label>
@@ -94,30 +116,14 @@ export const CreateProject: React.FC<Props> = (props: Props) => {
             name="projectDescription"
             id="projectDescription"
           />
-          {props.user.githubProfile && (
+          {props.userGithubRepositories && (
             <div>
               <h1>connect your github repository</h1>
-              <select
-              // onChange={(e) => {
-              //   const selectedRepo = userGithubRepositories.find(
-              //     (repo) => repo.id === parseInt(e.target.value)
-              //   );
-              //   if (selectedRepo) {
-              //     setCreateProjectDto((dto) => {
-              //       return {
-              //         ...dto,
-              //         name: selectedRepo.name,
-              //         description: selectedRepo.description,
-              //         githubRepoUrl: selectedRepo.url,
-              //       };
-              //     });
-              //   }
-              // }}
-              >
+              <select onChange={onChangeRepositorySelect}>
                 <option value="">select a repository</option>
-                {userGithubRepositories.map((repo) => {
+                {props.userGithubRepositories.map((repo) => {
                   return (
-                    <option key={repo.id} value={repo.id}>
+                    <option key={repo.name} value={repo.url}>
                       {repo.name}
                     </option>
                   );
