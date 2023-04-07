@@ -123,7 +123,7 @@ function Project(props: Props) {
         <ul>
           {props.tasks.map((task) => (
             <li key={task.id}>
-              <p>{task.name}</p>
+              <h3>{task.name}</h3>
               <p>{task.description}</p>
               <p>
                 {task.dueDate

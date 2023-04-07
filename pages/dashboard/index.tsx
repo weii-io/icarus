@@ -17,6 +17,7 @@ import { GetServerSidePropsContext } from "next";
 import { ProtectedRouteMiddleware } from "../../middleware";
 import { CreateProject } from "../../components/dashboard";
 import { CreateProjectDto } from "../../api/dto";
+import Popup from "../../components/Popup";
 
 type Props = {
   user: User;
@@ -27,8 +28,11 @@ type Props = {
 
 function Dashboard(props: Props) {
   const router = useRouter();
+  const popup = React.useRef<HTMLDialogElement>(null);
+  const [popupContent, setPopupContent] = React.useState<React.ReactNode>();
   return (
     <Layout>
+      <Popup elementRef={popup} content={popupContent} />
       <aside>
         <p>Welcome, {props.user.username}</p>
         <ul>
@@ -47,18 +51,36 @@ function Dashboard(props: Props) {
         {props.user.githubProfile ? (
           <button
             onClick={async () => {
-              await deleteGithubProfile(props.cookie);
+              const response = await deleteGithubProfile(props.cookie);
+              if (!response.ok) {
+                // show popup
+                popup.current?.showModal();
+                // prompt the dialog box to tell user that there is project currently being connected to the github profile
+                // user needs to delete the project first before disconnecting the github profile
+                setPopupContent(
+                  <div>
+                    <p>
+                      You have project(s) currently connected to your github
+                      profile. Please delete the project(s) first before
+                      disconnecting your github profile.
+                    </p>
+                  </div>
+                );
+              }
               // router.reload();
             }}
           >
             disconnect from github
           </button>
         ) : (
-          <Link
-            href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`}
-          >
-            connect to github
-          </Link>
+          // TODO: change link to button for security purpose
+          <button>
+            <Link
+              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`}
+            >
+              connect to github
+            </Link>
+          </button>
         )}
       </aside>
       <section>

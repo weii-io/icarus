@@ -1,15 +1,17 @@
 import { NextRouter, useRouter } from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import React from "react";
-import { ERROR } from "../enum";
-import { loginUser } from "../api";
-import { GetServerSidePropsContext } from "next";
-import { PublicRouteMiddleware } from "../middleware";
+import { ERROR } from "../../enum";
+import { loginUser } from "../../api";
+import { Input } from "../input/Input";
+import { Button } from "../button";
+import styles from "../../styles/LoginForm.module.css";
 
-function Login() {
+export const LoginForm = () => {
   const router = useRouter();
   const [showError, setShowError] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const [loginPayload, setLoginPayload] = React.useState({
     email: "",
@@ -52,35 +54,27 @@ function Login() {
       <form
         onSubmit={(event) => FormSubmitHandler(event, router, loginPayload)}
       >
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            required
-            onChange={(event) => InputChangeHandler(event, setLoginPayload)}
-            type="email"
-            autoComplete="email"
-            name="email"
-            id="email"
-            placeholder="Email"
+        <div className="row">
+          <Input.Email
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              InputChangeHandler(event, setLoginPayload)
+            }
           />
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            required
-            onChange={(event) => InputChangeHandler(event, setLoginPayload)}
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            name="password"
-            placeholder="Password"
+        <div className="row">
+          <Input.Password
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              InputChangeHandler(event, setLoginPayload)
+            }
           />
         </div>
-        <button type="submit">Login</button>
+        <Button.Primary className="row" type="submit">
+          Login
+        </Button.Primary>
       </form>
     </div>
   );
-}
+};
 
 const FormSubmitHandler = async (
   event: React.FormEvent<HTMLFormElement>,
@@ -120,19 +114,3 @@ const InputChangeHandler = (
     };
   });
 };
-
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  /** middleware */
-  const publicRouteMiddleware = await PublicRouteMiddleware(context);
-  if (publicRouteMiddleware.redirect) {
-    return publicRouteMiddleware;
-  }
-
-  return {
-    props: {},
-  };
-};
-
-export default Login;

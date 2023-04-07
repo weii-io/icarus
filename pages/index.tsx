@@ -1,34 +1,36 @@
 import type { NextPage } from "next";
 import React from "react";
-import { TypingTextEffect } from "../components";
-import Link from "next/link";
-import Head from "next/head";
+import { Icon, Layout, TypingTextEffect } from "../components";
 import { PublicRouteMiddleware } from "../middleware";
+import styles from "../styles/Home.module.css";
+import { LoginForm } from "../components/home";
+import { Button } from "../components/button";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
-    <div>
-      <Head>
-        <title>Icarus - Project Management Tools for weii.io</title>
-        <meta
-          name="description"
-          content="Project Management Tools powered by weii.io"
-        />
-        {/* TODO: update fav icon */}
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <TypingTextEffect
-        style={{ fontSize: "4rem" }}
-        text="Welcome to Icarus"
-        typingSpeed={100}
-      />
-      <Link href="/register">
-        <h1>Create an account</h1>
-      </Link>
-      <Link href="/login">
-        <h1>Already have an account</h1>
-      </Link>
-    </div>
+    <Layout>
+      <div className={styles.leftPanel}>
+        <h1>Welcome to Icarus</h1>
+        <section>
+          <p>
+            Icarus is an open-source project management web application that
+            helps teams collaborate and track their work. The application is
+            designed to be user-friendly, customizable, and scalable, making it
+            suitable for teams of all sizes.
+          </p>
+        </section>
+      </div>
+      <div className={styles.rightPanel}>
+        <h1>Icarus</h1>
+        <section>
+          <LoginForm />
+          <Button.Secondary className={styles.row} type="button">
+            <Link href="/register">Create an account</Link>
+          </Button.Secondary>
+        </section>
+      </div>
+    </Layout>
   );
 };
 

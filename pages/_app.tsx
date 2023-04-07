@@ -1,9 +1,26 @@
 import React from "react";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  // TODO: use logger to avoid console logging out error and control the log in production
+  // TODO: optimize data fetching
+  // check parallel fetching and waterfall fetching
+  // error: Warning: data for page "/dashboard" is 161 kB which exceeds the threshold of 128 kB, this amount of data can reduce performance.
+  // See more info here: https://nextjs.org/docs/messages/large-page-data
+  return (
+    <>
+      <Head>
+        <title>Icarus - Project Management Tools for weii.io</title>
+        <meta
+          name="description"
+          content="Project Management Tools powered by weii.io"
+        />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  );
 }
 
 export default MyApp;
