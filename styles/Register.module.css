@@ -8,9 +8,40 @@
 }
 
 .tab.active {
-  color: black;
+  color: white;
 }
 
 .tab.active svg {
-  stroke: black;
+  stroke: white;
+}
+
+.leftPanel {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.googleBtn {
+  width: auto !important;
+  display: flex;
+  align-items: center;
+}
+
+.googleBtn > svg {
+  margin-right: 1rem;
+}
+
+.divider {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 50%;
+  position: relative;
 }

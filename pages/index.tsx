@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import React from "react";
-import { Icon, Layout, TypingTextEffect } from "../components";
+import { Layout } from "../components";
 import { PublicRouteMiddleware } from "../middleware";
 import styles from "../styles/Home.module.css";
 import { LoginForm } from "../components/home";
@@ -25,6 +25,7 @@ const Home: NextPage = () => {
         <h1>Icarus</h1>
         <section>
           <LoginForm />
+          <br />
           <Button.Secondary className={styles.row} type="button">
             <Link href="/register">Create an account</Link>
           </Button.Secondary>

@@ -9,6 +9,7 @@
 /* left panel */
 .layout > :first-child {
   background-color: var(--secondary-background);
+  color: white;
 }
 
 /* right panel */

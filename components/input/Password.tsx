@@ -6,7 +6,7 @@ export const Password: React.FC<BaseInputProps> = (props: BaseInputProps) => {
     <>
       <label htmlFor="password">
         <label htmlFor="password">
-          <span>Password</span>
+          <span>{props.label || "Password"}</span>
           <span style={{ color: "red" }}>*</span>
         </label>
       </label>
@@ -14,12 +14,12 @@ export const Password: React.FC<BaseInputProps> = (props: BaseInputProps) => {
       <input
         className={styles.input}
         required
-        onChange={(event) => props.onChange(event)}
         type="password"
         id="password"
         autoComplete="current-password"
         name="password"
         placeholder="Enter your password"
+        {...props}
       />
     </>
   );

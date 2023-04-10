@@ -9,7 +9,7 @@
 
 :root {
   --primary-background: #fff;
-  --secondary-background: #f8fbfc;
+  --secondary-background: #000;
   --inactive: #acafb3;
 }
 
@@ -27,8 +27,7 @@ a {
 }
 
 .row {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  display: flex;
 }
 
 @keyframes blink {

@@ -12,12 +12,12 @@ export const Email: React.FC<BaseInputProps> = (props: BaseInputProps) => {
       <input
         className={styles.input}
         required
-        onChange={(event) => props.onChange(event)}
         type="email"
         autoComplete="email"
         name="email"
         id="email"
         placeholder="Enter your email"
+        {...props}
       />
     </>
   );

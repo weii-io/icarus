@@ -1,16 +1,14 @@
 import { NextRouter, useRouter } from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import React from "react";
-import { ERROR } from "../../enum";
 import { loginUser } from "../../api";
 import { Input } from "../input/Input";
 import { Button } from "../button";
 import styles from "../../styles/LoginForm.module.css";
+import { setInfoCookie } from "../../utils";
 
 export const LoginForm = () => {
   const router = useRouter();
-  const [showError, setShowError] = React.useState(false);
-  const [showSuccess, setShowSuccess] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const [loginPayload, setLoginPayload] = React.useState({
@@ -18,59 +16,30 @@ export const LoginForm = () => {
     password: "",
   });
 
-  const [errorMessage, setErrorMessage] = React.useState("");
-  const [successMessage, setSuccessMessage] = React.useState("");
-
-  React.useEffect(() => {
-    const login_error = parseCookies(null)[ERROR.LOGIN_ERROR];
-    if (login_error) {
-      setErrorMessage(login_error);
-      setShowError(true);
-      const timer = setTimeout(() => {
-        setShowError(false);
-        destroyCookie(null, ERROR.LOGIN_ERROR);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    const registration_success = parseCookies(null)[ERROR.REGISTRATION_SUCCESS];
-    if (registration_success) {
-      setSuccessMessage(registration_success);
-      setShowSuccess(true);
-      const timer = setTimeout(() => {
-        setShowSuccess(false);
-        destroyCookie(null, ERROR.REGISTRATION_SUCCESS);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
   return (
     <div>
-      {showError && <p>{errorMessage}</p>}
-      {showSuccess && <p>{successMessage}</p>}
       <form
         onSubmit={(event) => FormSubmitHandler(event, router, loginPayload)}
       >
-        <div className="row">
+        <div>
           <Input.Email
+            label="Email"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               InputChangeHandler(event, setLoginPayload)
             }
           />
         </div>
-        <div className="row">
+        <br />
+        <div>
           <Input.Password
+            label="Password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               InputChangeHandler(event, setLoginPayload)
             }
           />
         </div>
-        <Button.Primary className="row" type="submit">
-          Login
-        </Button.Primary>
+        <br />
+        <Button.Primary type="submit">Login</Button.Primary>
       </form>
     </div>
   );
@@ -88,15 +57,10 @@ const FormSubmitHandler = async (
     // Create cookie with error message
     // Validation error
     // Create cookie with error message
-    setCookie(
-      null,
-      "login_error",
-      Array.isArray(message) ? message.join(", ") : message,
-      {
-        maxAge: 1, // 1 hour
-        path: "/",
-      }
-    );
+    setInfoCookie({
+      message: Array.isArray(message) ? message.join(", ") : message,
+      type: "error",
+    });
     // Redirect to register page
     router.reload();
   }

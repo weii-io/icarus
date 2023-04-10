@@ -3,12 +3,14 @@ import React from "react";
 import { NextRouter, useRouter } from "next/router";
 import { setCookie, parseCookies, destroyCookie } from "nookies";
 
-import { Tab } from "../components/register";
+import { PasswordStrengthChecker, Tab } from "../components/register";
 import { Icon, Layout } from "../components";
 import styles from "../styles/Register.module.css";
 import { createUser } from "../api";
-import { ERROR } from "../enum";
 import { PublicRouteMiddleware } from "../middleware";
+import { Button } from "../components/button";
+import { Input } from "../components/input";
+import { setInfoCookie } from "../utils";
 
 interface CreateUserPayload {
   firstName: string;
@@ -18,11 +20,7 @@ interface CreateUserPayload {
   confirmPassword: string;
 }
 
-const Register: NextPage = ({
-  registrationError,
-}: {
-  registrationError?: string;
-}) => {
+const Register: NextPage = () => {
   const [activeTab, setActiveTab] = React.useState(0);
   const [createUserPayload, setCreateUserPayload] =
     React.useState<CreateUserPayload>({
@@ -35,18 +33,6 @@ const Register: NextPage = ({
 
   const form = React.useRef<HTMLFormElement>(null);
   const router = useRouter();
-  const [showError, setShowError] = React.useState(false);
-
-  React.useEffect(() => {
-    if (registrationError) {
-      setShowError(true);
-      const timer = setTimeout(() => {
-        setShowError(false);
-        destroyCookie(null, ERROR.REGISTRATION_ERROR);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [registrationError]);
 
   const tabs = [
     {
@@ -56,7 +42,60 @@ const Register: NextPage = ({
         <>
           <h1>Your details</h1>
           <p>Please provide your name and email.</p>
-          <button>
+          <br />
+          <div>
+            <div>
+              <Input.Text
+                value={createUserPayload.firstName}
+                id={"firstName"}
+                autoComplete="given-name"
+                onChange={(event) =>
+                  InputChangeHandler(event, setCreateUserPayload)
+                }
+                label="First name"
+                required={true}
+              />
+            </div>
+            <div>
+              <Input.Text
+                value={createUserPayload.lastName}
+                id={"lastName"}
+                autoComplete="family-name"
+                onChange={(event) =>
+                  InputChangeHandler(event, setCreateUserPayload)
+                }
+                label="Last name"
+                required={true}
+              />
+            </div>
+            <div>
+              <Input.Email
+                label="Email"
+                value={createUserPayload.email}
+                onChange={(event) =>
+                  InputChangeHandler(event, setCreateUserPayload)
+                }
+              />
+            </div>
+            <br />
+            <Button.Secondary
+              type="button"
+              onClick={() => {
+                // validation before continuing to next tab
+                // validate first name is not empty
+                // validate last name is not empty
+                // validate email is not empty
+                // validate email is valid
+                if (form.current?.reportValidity()) setActiveTab(activeTab + 1);
+              }}
+            >
+              Continue
+            </Button.Secondary>
+          </div>
+          <br />
+          <span>or</span>
+          <br />
+          <Button.Primary type="button" className={styles.googleBtn}>
             <Icon
               viewBox="0 0 48 48"
               width={24}
@@ -68,64 +107,7 @@ const Register: NextPage = ({
               <Icon.GoogleColor />
             </Icon>
             Sign up with Google
-          </button>
-          <div>
-            <hr />
-            <p>or</p>
-          </div>
-          <div>
-            <div>
-              <label htmlFor="firstName">First name</label>
-              <input
-                required
-                autoComplete="given-name"
-                value={createUserPayload.firstName}
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                type="text"
-                id="firstName"
-              />
-            </div>
-            <div>
-              <label htmlFor="lastName">Last name</label>
-              <input
-                required
-                autoComplete="family-name"
-                value={createUserPayload.lastName}
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                type="text"
-                id="lastName"
-              />
-            </div>
-            <div>
-              <label htmlFor="email">Email</label>
-              <input
-                value={createUserPayload.email}
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                required
-                autoComplete="email"
-                type="email"
-                id="email"
-              />
-            </div>
-            <button
-              onClick={() => {
-                // validation before continuing to next tab
-                // validate first name is not empty
-                // validate last name is not empty
-                // validate email is not empty
-                // validate email is valid
-                if (form.current?.reportValidity()) setActiveTab(activeTab + 1);
-              }}
-            >
-              Continue
-            </button>
-          </div>
+          </Button.Primary>
         </>
       ),
     },
@@ -136,19 +118,18 @@ const Register: NextPage = ({
         <>
           <h1>choose a password</h1>
           <p>Must be at least 8 characters</p>
+          <br />
           <div>
             {/* fix for [DOM Warning] Password forms should have (optionally hidden) username fields for accessibility" in console even with hidden username field */}
             <input hidden type="text" autoComplete="username" />
             <div>
-              <label htmlFor="password">Password</label>
-              <input
-                required
-                autoComplete="new-password"
+              <Input.Password
+                label="Password"
                 value={createUserPayload.password}
                 onChange={(event) =>
                   InputChangeHandler(event, setCreateUserPayload)
                 }
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_!@#$%^&*])[A-Za-z\d_!@#$%^&*]{8,}$"
                 onInvalid={(event) => {
                   if (event.currentTarget.validity.patternMismatch)
                     event.currentTarget.setCustomValidity(
@@ -158,15 +139,19 @@ const Register: NextPage = ({
                 onInput={(event) => {
                   event.currentTarget.setCustomValidity("");
                 }}
-                type="password"
-                id="password"
+                required={true}
               />
             </div>
+            <PasswordStrengthChecker password={createUserPayload.password} />
+            <br />
             <div>
-              <label htmlFor="confirmPassword">Confirm password</label>
-              <input
-                required
-                autoComplete="new-password"
+              <Input.Password
+                id="confirmPassword"
+                label="Confirm password"
+                value={createUserPayload.confirmPassword}
+                onChange={(event) =>
+                  InputChangeHandler(event, setCreateUserPayload)
+                }
                 pattern={`^${createUserPayload.password}$`}
                 onInvalid={(event) => {
                   if (event.currentTarget.validity.patternMismatch)
@@ -175,26 +160,34 @@ const Register: NextPage = ({
                 onInput={(event) => {
                   event.currentTarget.setCustomValidity("");
                 }}
-                value={createUserPayload.confirmPassword}
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                type="password"
-                id="confirmPassword"
+                required={true}
               />
             </div>
-            <button
-              type="submit"
-              onClick={() => {
-                // validation before continuing to next tab
-                // validate password is not empty
-                // validate password is at least 8 characters
-                // validate password matches confirm password
-                if (!form.current?.reportValidity()) return false;
-              }}
-            >
-              Create account
-            </button>
+            <br />
+            <div className="row">
+              <Button.Secondary
+                style={{
+                  width: "100px",
+                  marginRight: "4px",
+                }}
+                type="button"
+                onClick={() => setActiveTab(activeTab - 1)}
+              >
+                back
+              </Button.Secondary>
+              <Button.Primary
+                type="submit"
+                onClick={() => {
+                  // validation before continuing to next tab
+                  // validate password is not empty
+                  // validate password is at least 8 characters
+                  // validate password matches confirm password
+                  if (!form.current?.reportValidity()) return false;
+                }}
+              >
+                Create account
+              </Button.Primary>
+            </div>
           </div>
         </>
       ),
@@ -204,7 +197,7 @@ const Register: NextPage = ({
   return (
     <div>
       <Layout>
-        <div className={styles.panel}>
+        <div className={styles.leftPanel}>
           <h1>Icarus</h1>
           <div>
             {tabs.map((tab, index) => (
@@ -234,10 +227,9 @@ const Register: NextPage = ({
           onSubmit={(event) =>
             FormSubmitHandler(event, createUserPayload, router)
           }
-          className={styles.panel}
+          className={styles.rightPanel}
           ref={form}
         >
-          {showError && <p>{registrationError}</p>}
           {tabs[activeTab].form}
         </form>
       </Layout>
@@ -265,24 +257,30 @@ const FormSubmitHandler = async (
   event.preventDefault();
   try {
     const response = await createUser(payload);
-    setCookie(
-      null,
-      "registration_success",
-      "User created. Please login to continue",
-      {
-        maxAge: 1, // 1 hour
-        path: "/",
-      }
-    );
-    router.push("/login");
+    if (!response.ok) {
+      const { message } = await response.json();
+      setInfoCookie({
+        message: message,
+        type: "error",
+      });
+      router.reload();
+      return;
+    }
+
+    // Create cookie with success message
+    setInfoCookie({
+      message: "User created. Please login to continue",
+      type: "success",
+    });
+    router.push("/");
   } catch (context: any) {
     const { error, message, statusCode } = context.response.data;
     if (statusCode === 400) {
       // Validation error
       // Create cookie with error message
-      setCookie(null, "registration_error", message, {
-        maxAge: 1,
-        path: "/",
+      setInfoCookie({
+        message: message,
+        type: "error",
       });
       // Redirect to register page
       router.reload();
@@ -299,12 +297,8 @@ export const getServerSideProps = async (
     return publicRouteMiddleware;
   }
 
-  const cookies = parseCookies(context);
-  const registrationError = cookies[ERROR.REGISTRATION_ERROR] || "";
   return {
-    props: {
-      registrationError,
-    },
+    props: {},
   };
 };
 

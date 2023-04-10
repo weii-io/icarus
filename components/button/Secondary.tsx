@@ -7,8 +7,8 @@ export const Secondary: React.FC<BaseButtonProps> = (
 ) => {
   return (
     <button
+      {...props}
       className={classNames(styles.button, styles.secondary, props.className)}
-      type={props.type}
     >
       {props.children}
     </button>
