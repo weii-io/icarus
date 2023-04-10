@@ -4,7 +4,6 @@ import React from "react";
 import { loginUser } from "../../services";
 import { Input } from "../input/Input";
 import { Button } from "../button";
-import styles from "../../styles/LoginForm.module.css";
 import { setInfoCookie } from "../../utils";
 
 export const LoginForm = () => {
