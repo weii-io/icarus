@@ -11,12 +11,12 @@ import {
   getUserGithubOrganization,
   getUserGithubRepositories,
   logoutUser,
-} from "../../api";
+} from "../../services";
 import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
 import { ProtectedRouteMiddleware } from "../../middleware";
 import { CreateProject } from "../../components/dashboard";
-import { CreateProjectDto } from "../../api/dto";
+import { CreateProjectDto } from "../../services/dto";
 import Popup from "../../components/Popup";
 
 type Props = {

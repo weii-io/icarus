@@ -1,5 +1,5 @@
 import React from "react";
-import { CreateProjectDto } from "../../api/dto";
+import { CreateProjectDto } from "../../services/dto";
 import { useRouter } from "next/router";
 import { GithubProfile } from "../../interface";
 import { refreshPage } from "../../utils";

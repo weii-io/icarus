@@ -1,7 +1,7 @@
 import { NextRouter, useRouter } from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import React from "react";
-import { loginUser } from "../../api";
+import { loginUser } from "../../services";
 import { Input } from "../input/Input";
 import { Button } from "../button";
 import styles from "../../styles/LoginForm.module.css";

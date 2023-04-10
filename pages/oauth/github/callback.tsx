@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import React from "react";
-import { createGithubProfile, getGithubAccessToken } from "../../../api";
+import { createGithubProfile, getGithubAccessToken } from "../../../services";
 
 type Props = {};
 

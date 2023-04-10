@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from "next";
-import { getMe } from "../api";
+import { getMe } from "../services";
 
 export const ProtectedRouteMiddleware = async (
   getServerSidePropsContext: GetServerSidePropsContext

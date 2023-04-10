@@ -1,7 +1,7 @@
 import React from "react";
 import { Project, Task } from "../../../interface";
-import { createTask, getProjectById, getTasks } from "../../../api";
-import { CreateTaskDto } from "../../../api/dto";
+import { createTask, getProjectById, getTasks } from "../../../services";
+import { CreateTaskDto } from "../../../services/dto";
 import { useRouter } from "next/router";
 import { ProtectedRouteMiddleware } from "../../../middleware";
 import { setCookie } from "nookies";
