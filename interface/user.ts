@@ -1,3 +1,5 @@
+import { GithubProfile } from "./github-profile";
+
 export interface User {
   id: number;
   firstName: string;
@@ -5,8 +7,5 @@ export interface User {
   email: string;
   password: string;
   username: string;
-  githubProfile: {
-    username: string;
-    accessToken: string;
-  };
+  githubProfile: GithubProfile;
 }

@@ -11,3 +11,5 @@ export * from "./get-github-access-token";
 export * from "./create-github-profile";
 export * from "./delete-github-profile";
 export * from "./get-user-github-repositories";
+export * from "./get-user-github-organization";
+export * from "./get-github-organization-repositories";

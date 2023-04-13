@@ -1,0 +1,17 @@
+.button {
+  padding: 8px 16px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.primary {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+
+.secondary {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+}

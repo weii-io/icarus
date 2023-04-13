@@ -1,5 +1,11 @@
 import React from "react";
-import { CheckCircle, GoogleColor } from "../icons";
+import {
+  Check,
+  CheckCircle,
+  ExclamationCircle,
+  GoogleColor,
+  X,
+} from "../icons";
 
 type Props = {
   /** unit in pixel */
@@ -19,6 +25,9 @@ type Props = {
 type IconSubComponents = {
   CheckCircle: typeof CheckCircle;
   GoogleColor: typeof GoogleColor;
+  ExclamationCircle: typeof ExclamationCircle;
+  Check: typeof Check;
+  X: typeof X;
 };
 
 export const Icon: React.FC<Props> & IconSubComponents = (props: Props) => {
@@ -39,3 +48,6 @@ export const Icon: React.FC<Props> & IconSubComponents = (props: Props) => {
 
 Icon.CheckCircle = CheckCircle;
 Icon.GoogleColor = GoogleColor;
+Icon.ExclamationCircle = ExclamationCircle;
+Icon.Check = Check;
+Icon.X = X;

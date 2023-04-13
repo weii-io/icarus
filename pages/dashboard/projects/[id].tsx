@@ -1,9 +1,11 @@
 import React from "react";
 import { Project, Task } from "../../../interface";
-import { createTask, getProjectById, getTasks } from "../../../api";
-import { CreateTaskDto } from "../../../api/dto";
+import { createTask, getProjectById, getTasks } from "../../../services";
+import { CreateTaskDto } from "../../../services/dto";
 import { useRouter } from "next/router";
 import { ProtectedRouteMiddleware } from "../../../middleware";
+import { setCookie } from "nookies";
+import Link from "next/link";
 
 type Props = {
   project: Project;
@@ -98,13 +100,30 @@ function Project(props: Props) {
         <button onClick={() => createTaskDialog.current?.close()}>close</button>
       </dialog>
       <h1>{props.project.name}</h1>
+      {props.project.githubRepoUrl && (
+        <div>
+          <h2>
+            {`connected to `}
+            <Link
+              target="_blank"
+              href={`https://github.com/${
+                props.project.githubRepoUrl.split(
+                  "https://api.github.com/repos/"
+                )[1]
+              }`}
+            >
+              github
+            </Link>
+          </h2>
+        </div>
+      )}
       <p>{props.project.description || "no description"}</p>
       <div>
         <h2>tasks</h2>
         <ul>
           {props.tasks.map((task) => (
             <li key={task.id}>
-              <p>{task.name}</p>
+              <h3>{task.name}</h3>
               <p>{task.description}</p>
               <p>
                 {task.dueDate
@@ -132,29 +151,25 @@ export const getServerSideProps = async (context: any) => {
   }
 
   const { req } = context;
-  try {
-    const getProjectByIdReponse = await getProjectById(
-      context.params.id,
-      req.headers.cookie
-    );
-    const project = await getProjectByIdReponse.json();
-    const getTasksResponse = await getTasks(project.id, req.headers.cookie);
-    const tasks = await getTasksResponse.json();
+  const getProjectByIdReponse = await getProjectById(
+    req.headers.cookie,
+    context.params.id
+  );
+  if (!getProjectByIdReponse.ok) {
     return {
-      props: {
-        project: project,
-        tasks: tasks,
-        cookie: req.headers.cookie,
-      },
-    };
-  } catch (error) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
+      notFound: true,
     };
   }
+  const project = await getProjectByIdReponse.json();
+  const getTasksResponse = await getTasks(req.headers.cookie, project.id);
+  const tasks = await getTasksResponse.json();
+  return {
+    props: {
+      project: project,
+      tasks: tasks,
+      cookie: req.headers.cookie,
+    },
+  };
 };
 
 export default Project;
