@@ -17,7 +17,7 @@ import { GetServerSidePropsContext } from "next";
 import { ProtectedRouteMiddleware } from "../../middleware";
 import { CreateProject } from "../../components/dashboard";
 import { CreateProjectDto } from "../../services/dto";
-import Popup from "../../components/Popup";
+import Dialog from "../../components/Dialog";
 
 type Props = {
   user: User;
@@ -28,86 +28,89 @@ type Props = {
 
 function Dashboard(props: Props) {
   const router = useRouter();
-  const popup = React.useRef<HTMLDialogElement>(null);
-  const [popupContent, setPopupContent] = React.useState<React.ReactNode>();
+  const dialog = React.useRef<HTMLDialogElement>(null);
+  const [dialogContent, setDialogContent] = React.useState<React.ReactNode>();
+
   return (
-    <Layout>
-      <Popup elementRef={popup} content={popupContent} />
-      <aside>
-        <p>Welcome, {props.user.username}</p>
-        <ul>
-          <li>Projects</li>
-          <li>Tasks</li>
-          <li>Setting</li>
-        </ul>
-        <button
-          onClick={async () => {
-            const response = await logoutUser(props.cookie);
-            router.reload();
-          }}
-        >
-          logout
-        </button>
-        {props.user.githubProfile ? (
+    <>
+      <Dialog elementRef={dialog} content={dialogContent} />
+      <Layout>
+        <aside>
+          <p>Welcome, {props.user.username}</p>
+          <ul>
+            <li>Projects</li>
+            <li>Tasks</li>
+            <li>Setting</li>
+          </ul>
           <button
             onClick={async () => {
-              const response = await deleteGithubProfile(props.cookie);
-              if (!response.ok) {
-                // show popup
-                popup.current?.showModal();
-                // prompt the dialog box to tell user that there is project currently being connected to the github profile
-                // user needs to delete the project first before disconnecting the github profile
-                setPopupContent(
-                  <div>
-                    <p>
-                      You have project(s) currently connected to your github
-                      profile. Please delete the project(s) first before
-                      disconnecting your github profile.
-                    </p>
-                  </div>
-                );
-              }
-              // router.reload();
+              const response = await logoutUser(props.cookie);
+              router.reload();
             }}
           >
-            disconnect from github
+            logout
           </button>
-        ) : (
-          // TODO: change link to button for security purpose
-          <button>
-            <Link
-              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`}
+          {props.user.githubProfile ? (
+            <button
+              onClick={async () => {
+                const response = await deleteGithubProfile(props.cookie);
+                if (!response.ok) {
+                  // show popup
+                  dialog.current?.showModal();
+                  // prompt the dialog box to tell user that there is project currently being connected to the github profile
+                  // user needs to delete the project first before disconnecting the github profile
+                  setDialogContent(
+                    <div>
+                      <p>
+                        You have project(s) currently connected to your github
+                        profile. Please delete the project(s) first before
+                        disconnecting your github profile.
+                      </p>
+                    </div>
+                  );
+                }
+                // router.reload();
+              }}
             >
-              connect to github
-            </Link>
-          </button>
-        )}
-      </aside>
-      <section>
-        <div>
-          <h1>Projects</h1>
-          <CreateProject
-            formSubmitHandler={(payload: CreateProjectDto) =>
-              createProject(props.cookie, payload)
-            }
-            userGithubRepositories={props.userGithubRepositories}
-            githubProfile={props.user.githubProfile}
-          />
+              disconnect from github
+            </button>
+          ) : (
+            // TODO: change link to button for security purpose
+            <button>
+              <Link
+                href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`}
+              >
+                connect to github
+              </Link>
+            </button>
+          )}
+        </aside>
+        <section>
           <div>
-            {props.projects.map((project) => {
-              return (
-                <div key={project.id}>
-                  <Link href={`/dashboard/projects/${project.id}`}>
-                    <h2>{project.name}</h2>
-                  </Link>
-                  <p>{project.description || "no description"}</p>
-                </div>
-              );
-            })}
+            <h1>Projects</h1>
+            <CreateProject
+              formSubmitHandler={(payload: CreateProjectDto) =>
+                createProject(props.cookie, payload)
+              }
+              userGithubRepositories={props.userGithubRepositories}
+              githubProfile={props.user.githubProfile}
+            />
+            <div>
+              {props.projects.map((project) => {
+                return (
+                  <div key={project.id}>
+                    <Link href={`/dashboard/projects/${project.id}`}>
+                      <h2>{project.name}</h2>
+                    </Link>
+                    <p>{project.description || "no description"}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
-    </Layout>
+        </section>
+      </Layout>
+    </>
   );
 }
 

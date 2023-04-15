@@ -18,7 +18,15 @@ export const LoginForm = () => {
   return (
     <div>
       <form
-        onSubmit={(event) => FormSubmitHandler(event, router, loginPayload)}
+        onSubmit={async (event) => {
+          setLoading(true);
+          const formSubmitted = await FormSubmitHandler(event, loginPayload);
+          if (formSubmitted) {
+            router.push("/dashboard");
+          } else {
+            router.reload();
+          }
+        }}
       >
         <div>
           <Input.Email
@@ -38,7 +46,9 @@ export const LoginForm = () => {
           />
         </div>
         <br />
-        <Button.Primary type="submit">Login</Button.Primary>
+        <Button.Primary type="submit" disabled={loading}>
+          {loading ? "Loading..." : "Login"}
+        </Button.Primary>
       </form>
     </div>
   );
@@ -46,7 +56,6 @@ export const LoginForm = () => {
 
 const FormSubmitHandler = async (
   event: React.FormEvent<HTMLFormElement>,
-  router: NextRouter,
   payload: any
 ) => {
   event.preventDefault();
@@ -61,9 +70,9 @@ const FormSubmitHandler = async (
       type: "error",
     });
     // Redirect to register page
-    router.reload();
+    return false;
   }
-  router.push("/dashboard");
+  return true;
 };
 
 const InputChangeHandler = (
