@@ -1,4 +1,4 @@
-export const getGithubAccessToken = async (code: string) => {
+export const getGithubAccessTokenApi = async (code: string) => {
   return fetch("https://github.com/login/oauth/access_token", {
     method: "POST",
     headers: {

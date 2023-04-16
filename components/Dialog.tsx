@@ -5,7 +5,7 @@ type Props = {
   elementRef?: React.RefObject<HTMLDialogElement>;
 };
 
-function Popup(props: Props) {
+function Dialog(props: Props) {
   return (
     <dialog ref={props.elementRef}>
       {props.content}
@@ -14,4 +14,4 @@ function Popup(props: Props) {
   );
 }
 
-export default Popup;
+export default Dialog;

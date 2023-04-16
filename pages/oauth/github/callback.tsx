@@ -1,6 +1,9 @@
 import { GetServerSidePropsContext } from "next";
 import React from "react";
-import { createGithubProfile, getGithubAccessToken } from "../../../services";
+import {
+  createGithubProfileApi,
+  getGithubAccessTokenApi,
+} from "../../../server";
 
 type Props = {};
 
@@ -13,7 +16,7 @@ export const getServerSideProps = async (
 ) => {
   const { code } = context.query;
 
-  const getGithubAccessTokenResponse = await getGithubAccessToken(
+  const getGithubAccessTokenResponse = await getGithubAccessTokenApi(
     code as string
   );
 
@@ -29,9 +32,9 @@ export const getServerSideProps = async (
 
   const { access_token } = await getGithubAccessTokenResponse.json();
 
-  const createGithubProfileResponse = await createGithubProfile(
-    context.req.headers.cookie,
-    access_token
+  const createGithubProfileResponse = await createGithubProfileApi(
+    access_token,
+    context.req.headers.cookie as string
   );
 
   if (!createGithubProfileResponse.ok) {

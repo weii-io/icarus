@@ -1,16 +1,13 @@
 import React from "react";
 import { Project, Task } from "../../../interface";
-import { createTask, getProjectById, getTasks } from "../../../services";
-import { CreateTaskDto } from "../../../services/dto";
+import { CreateTaskDto } from "../../../server/dto";
 import { useRouter } from "next/router";
-import { ProtectedRouteMiddleware } from "../../../middleware";
-import { setCookie } from "nookies";
 import Link from "next/link";
+import { createTaskApi, getProjectByIdApi, getTasksApi } from "../../../server";
 
 type Props = {
   project: Project;
   tasks: Task[];
-  cookie: string | undefined;
 };
 
 function Project(props: Props) {
@@ -47,7 +44,7 @@ function Project(props: Props) {
           onSubmit={async (e) => {
             e.preventDefault();
             try {
-              const response = await createTask(props.cookie, createTaskDto);
+              const createTaskResponse = await createTaskApi(createTaskDto);
               resetCreateTaskDto();
               createTaskDialog.current?.close();
               router.replace(router.asPath);
@@ -144,16 +141,10 @@ function Project(props: Props) {
 }
 
 export const getServerSideProps = async (context: any) => {
-  /** middleware */
-  const protectedRouteMiddleware = await ProtectedRouteMiddleware(context);
-  if (protectedRouteMiddleware.redirect) {
-    return protectedRouteMiddleware;
-  }
-
   const { req } = context;
-  const getProjectByIdReponse = await getProjectById(
-    req.headers.cookie,
-    context.params.id
+  const getProjectByIdReponse = await getProjectByIdApi(
+    context.params.id,
+    req.headers.cookie
   );
   if (!getProjectByIdReponse.ok) {
     return {
@@ -161,13 +152,12 @@ export const getServerSideProps = async (context: any) => {
     };
   }
   const project = await getProjectByIdReponse.json();
-  const getTasksResponse = await getTasks(req.headers.cookie, project.id);
+  const getTasksResponse = await getTasksApi(project.id, req.headers.cookie);
   const tasks = await getTasksResponse.json();
   return {
     props: {
       project: project,
       tasks: tasks,
-      cookie: req.headers.cookie,
     },
   };
 };

@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import React from "react";
 import { Layout } from "../components";
-import { PublicRouteMiddleware } from "../middleware";
 import styles from "../styles/Home.module.css";
 import { LoginForm } from "../components/home";
 import { Button } from "../components/button";
@@ -37,10 +36,10 @@ const Home: NextPage = () => {
 
 export const getServerSideProps = async (context: any) => {
   /** middleware */
-  const publicRouteMiddleware = await PublicRouteMiddleware(context);
-  if (publicRouteMiddleware.redirect) {
-    return publicRouteMiddleware;
-  }
+  // const publicRouteMiddleware = await PublicRouteMiddleware(context);
+  // if (publicRouteMiddleware.redirect) {
+  //   return publicRouteMiddleware;
+  // }
 
   return {
     props: {},

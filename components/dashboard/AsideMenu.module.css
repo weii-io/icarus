@@ -1,0 +1,46 @@
+.container {
+  list-style-type: none;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.container li {
+  margin-bottom: 1rem;
+  border: 1px solid black;
+}
+
+.container li a {
+  padding: 1rem;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.container li:hover {
+  border: 1px solid white;
+  cursor: pointer;
+  /* color: #000; */
+  border-radius: 4px;
+}
+
+/* .container li:hover svg {
+  stroke: black;
+} */
+
+.container li svg {
+  margin-right: 10px;
+}
+
+.container li.active {
+  background-color: #f5f5f5;
+  color: #000;
+  border-radius: 4px;
+}
+
+.container li.active a {
+  color: #000;
+}
+
+.container li.active svg {
+  stroke: black;
+}

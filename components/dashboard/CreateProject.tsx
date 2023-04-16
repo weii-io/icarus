@@ -1,12 +1,12 @@
 import React from "react";
-import { CreateProjectDto } from "../../services/dto";
+import { CreateProjectDto } from "../../server/dto";
 import { useRouter } from "next/router";
 import { GithubProfile } from "../../interface";
 import { refreshPage } from "../../utils";
 
 type Props = {
   userGithubRepositories?: any[];
-  formSubmitHandler: (dto: CreateProjectDto) => Promise<Response>;
+  createProjectApi: (dto: CreateProjectDto) => Promise<Response>;
   githubProfile: GithubProfile;
 };
 
@@ -79,7 +79,7 @@ export const CreateProject: React.FC<Props> = (props: Props) => {
           ref={createProjectForm}
           onSubmit={async (e) => {
             e.preventDefault();
-            const createProjectResponse = await props.formSubmitHandler({
+            const createProjectResponse = await props.createProjectApi({
               ...createProjectDto,
               githubProfileId: props.githubProfile.id,
             });

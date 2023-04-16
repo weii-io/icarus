@@ -6,8 +6,7 @@ import { setCookie, parseCookies, destroyCookie } from "nookies";
 import { PasswordStrengthChecker, Tab } from "../components/register";
 import { Icon, Layout } from "../components";
 import styles from "../styles/Register.module.css";
-import { createUser } from "../services";
-import { PublicRouteMiddleware } from "../middleware";
+import { createUserApi } from "../server";
 import { Button } from "../components/button";
 import { Input } from "../components/input";
 import { setInfoCookie } from "../utils";
@@ -256,9 +255,9 @@ const FormSubmitHandler = async (
 ) => {
   event.preventDefault();
   try {
-    const response = await createUser(payload);
-    if (!response.ok) {
-      const { message } = await response.json();
+    const createUserResponse = await createUserApi(payload);
+    if (!createUserResponse.ok) {
+      const { message } = await createUserResponse.json();
       setInfoCookie({
         message: message,
         type: "error",
@@ -292,10 +291,10 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   /** middleware */
-  const publicRouteMiddleware = await PublicRouteMiddleware(context);
-  if (publicRouteMiddleware.redirect) {
-    return publicRouteMiddleware;
-  }
+  // const publicRouteMiddleware = await PublicRouteMiddleware(context);
+  // if (publicRouteMiddleware.redirect) {
+  //   return publicRouteMiddleware;
+  // }
 
   return {
     props: {},

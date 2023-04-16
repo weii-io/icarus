@@ -1,7 +1,7 @@
 import { NextRouter, useRouter } from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import React from "react";
-import { loginUser } from "../../services";
+import { loginUserApi } from "../../server";
 import { Input } from "../input/Input";
 import { Button } from "../button";
 import { setInfoCookie } from "../../utils";
@@ -18,7 +18,15 @@ export const LoginForm = () => {
   return (
     <div>
       <form
-        onSubmit={(event) => FormSubmitHandler(event, router, loginPayload)}
+        onSubmit={async (event) => {
+          setLoading(true);
+          const formSubmitted = await FormSubmitHandler(event, loginPayload);
+          if (formSubmitted) {
+            router.push("/dashboard");
+          } else {
+            router.reload();
+          }
+        }}
       >
         <div>
           <Input.Email
@@ -38,7 +46,9 @@ export const LoginForm = () => {
           />
         </div>
         <br />
-        <Button.Primary type="submit">Login</Button.Primary>
+        <Button.Primary type="submit" disabled={loading}>
+          {loading ? "Loading..." : "Login"}
+        </Button.Primary>
       </form>
     </div>
   );
@@ -46,11 +56,10 @@ export const LoginForm = () => {
 
 const FormSubmitHandler = async (
   event: React.FormEvent<HTMLFormElement>,
-  router: NextRouter,
   payload: any
 ) => {
   event.preventDefault();
-  const loginUserResponse = await loginUser(payload);
+  const loginUserResponse = await loginUserApi(payload);
   if (!loginUserResponse.ok) {
     const { statusCode, message } = await loginUserResponse.json();
     // Create cookie with error message
@@ -61,9 +70,9 @@ const FormSubmitHandler = async (
       type: "error",
     });
     // Redirect to register page
-    router.reload();
+    return false;
   }
-  router.push("/dashboard");
+  return true;
 };
 
 const InputChangeHandler = (
