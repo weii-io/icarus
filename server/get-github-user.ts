@@ -1,4 +1,4 @@
-export const getGithubUser = async (accessToken: string) => {
+export const getGithubUserApi = async (accessToken: string) => {
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${accessToken}`);
   const options: RequestInit = {

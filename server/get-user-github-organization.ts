@@ -1,8 +1,8 @@
 import { User } from "../interface";
 
-export const getUserGithubRepositories = async (user: User) => {
+export const getUserGithubOrganizationApi = async (user: User) => {
   const headers = new Headers();
-  const url = `https://api.github.com/users/${user.githubProfile.username}/repos`;
+  const url = `https://api.github.com/users/${user.githubProfile.username}/orgs`;
   headers.set("Authorization", `Bearer ${user.githubProfile.accessToken}`);
   const options: RequestInit = {
     method: "GET",

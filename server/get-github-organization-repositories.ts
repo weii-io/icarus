@@ -1,6 +1,6 @@
 import { User } from "../interface";
 
-export const getGithubOrganizationRepositories = async (
+export const getGithubOrganizationRepositoriesApi = async (
   organizationName: string,
   user: User
 ) => {

@@ -5,6 +5,9 @@ import {
   ExclamationCircle,
   GoogleColor,
   X,
+  Document,
+  ClipboardDocument,
+  Gear6Tooths,
 } from "../icons";
 
 type Props = {
@@ -28,6 +31,9 @@ type IconSubComponents = {
   ExclamationCircle: typeof ExclamationCircle;
   Check: typeof Check;
   X: typeof X;
+  Document: typeof Document;
+  ClipboardDocument: typeof ClipboardDocument;
+  Gear6Tooths: typeof Gear6Tooths;
 };
 
 export const Icon: React.FC<Props> & IconSubComponents = (props: Props) => {
@@ -51,3 +57,6 @@ Icon.GoogleColor = GoogleColor;
 Icon.ExclamationCircle = ExclamationCircle;
 Icon.Check = Check;
 Icon.X = X;
+Icon.Document = Document;
+Icon.ClipboardDocument = ClipboardDocument;
+Icon.Gear6Tooths = Gear6Tooths;

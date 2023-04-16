@@ -1,7 +1,7 @@
 import { NextRouter, useRouter } from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import React from "react";
-import { loginUser } from "../../services";
+import { loginUserApi } from "../../server";
 import { Input } from "../input/Input";
 import { Button } from "../button";
 import { setInfoCookie } from "../../utils";
@@ -59,7 +59,7 @@ const FormSubmitHandler = async (
   payload: any
 ) => {
   event.preventDefault();
-  const loginUserResponse = await loginUser(payload);
+  const loginUserResponse = await loginUserApi(payload);
   if (!loginUserResponse.ok) {
     const { statusCode, message } = await loginUserResponse.json();
     // Create cookie with error message
