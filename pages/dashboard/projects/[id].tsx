@@ -97,14 +97,14 @@ function Project(props: Props) {
         <button onClick={() => createTaskDialog.current?.close()}>close</button>
       </dialog>
       <h1>{props.project.name}</h1>
-      {props.project.githubRepoUrl && (
+      {props.project.githubRepoSlug && (
         <div>
           <h2>
             {`connected to `}
             <Link
               target="_blank"
               href={`https://github.com/${
-                props.project.githubRepoUrl.split(
+                props.project.githubRepoSlug.split(
                   "https://api.github.com/repos/"
                 )[1]
               }`}

@@ -7,6 +7,6 @@ export interface Project {
   description?: string;
   owner: User;
   ownerId?: number;
-  githubRepoUrl?: string;
+  githubRepoSlug?: string;
   githubProfile: GithubProfile;
 }
