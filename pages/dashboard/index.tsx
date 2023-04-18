@@ -4,11 +4,11 @@ import { useRouter } from "next/router";
 import { Layout } from "../../components";
 import { GetServerSidePropsContext } from "next";
 import styles from "../../styles/Dashboard.module.css";
-import { TTab } from "../../components/dashboard/type";
 import { Settings } from "../../components/dashboard/Settings";
 import { AsideMenu, Projects, Tasks } from "../../components/dashboard";
 import { DashboardContext } from "../../context";
 import { getMeApi } from "../../server";
+import { TTabKey } from "../../components/dashboard/dashboard.type";
 
 type Props = {
   user: User;
@@ -26,13 +26,13 @@ function Dashboard(props: Props) {
   return (
     <>
       <Layout className={styles.layout}>
-        <aside>
+        <aside style={{ position: "relative" }}>
           <h1>Icarus</h1>
-          <AsideMenu currentTab={router.query.tab as TTab} />
+          <AsideMenu currentTab={router.query.tab as TTabKey} />
         </aside>
         <section>
           <DashboardContext.Provider value={{ user: props.user }}>
-            {menuContent[router.query.tab as TTab]}
+            {menuContent[router.query.tab as TTabKey]}
           </DashboardContext.Provider>
         </section>
       </Layout>

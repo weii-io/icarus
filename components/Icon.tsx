@@ -8,6 +8,8 @@ import {
   Document,
   ClipboardDocument,
   Gear6Tooths,
+  Github,
+  Logout,
 } from "../icons";
 
 type Props = {
@@ -34,6 +36,8 @@ type IconSubComponents = {
   Document: typeof Document;
   ClipboardDocument: typeof ClipboardDocument;
   Gear6Tooths: typeof Gear6Tooths;
+  Github: typeof Github;
+  Logout: typeof Logout;
 };
 
 export const Icon: React.FC<Props> & IconSubComponents = (props: Props) => {
@@ -60,3 +64,5 @@ Icon.X = X;
 Icon.Document = Document;
 Icon.ClipboardDocument = ClipboardDocument;
 Icon.Gear6Tooths = Gear6Tooths;
+Icon.Github = Github;
+Icon.Logout = Logout;

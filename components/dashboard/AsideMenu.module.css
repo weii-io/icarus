@@ -44,3 +44,23 @@
 .container li.active svg {
   stroke: black;
 }
+
+.disabled {
+  pointer-events: none;
+}
+
+.logout {
+  position: absolute;
+  bottom: 1rem;
+  left: 12.5%;
+  border: 1px solid white;
+  width: 75%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logout > svg {
+  margin-right: 4px;
+}

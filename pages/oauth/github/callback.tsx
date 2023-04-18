@@ -15,47 +15,32 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   const { code } = context.query;
-
   const getGithubAccessTokenResponse = await getGithubAccessTokenApi(
     code as string
   );
 
   if (!getGithubAccessTokenResponse.ok) {
+    // set cookie error message unable to connect to github, please contact me@weii.io
     console.log("get github access token error");
-    // return {
-    //   redirect: {
-    //     destination: "/",
-    //     permanent: false,
-    //   },
-    // };
   }
 
   const { access_token } = await getGithubAccessTokenResponse.json();
 
   const createGithubProfileResponse = await createGithubProfileApi(
-    access_token,
+    { accessToken: access_token },
     context.req.headers.cookie as string
   );
 
   if (!createGithubProfileResponse.ok) {
+    // set cookie error message unable to connect to github, please contact me@weii.io
     console.log("create github profile error");
-    // return {
-    //   redirect: {
-    //     destination: "/",
-    //     permanent: false,
-    //   },
-    // };
   }
 
   return {
     redirect: {
-      destination: "/dashboard",
+      destination: "/dashboard?tab=settings",
       permanent: false,
     },
-  };
-
-  return {
-    props: {},
   };
 };
 

@@ -5,6 +5,7 @@ import { loginUserApi } from "../../server";
 import { Input } from "../input/Input";
 import { Button } from "../button";
 import { setInfoCookie } from "../../utils";
+import { Spinner } from "../Spinner";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ export const LoginForm = () => {
     <div>
       <form
         onSubmit={async (event) => {
+          event.preventDefault();
           setLoading(true);
           const formSubmitted = await FormSubmitHandler(event, loginPayload);
           if (formSubmitted) {
@@ -46,8 +48,16 @@ export const LoginForm = () => {
           />
         </div>
         <br />
-        <Button.Primary type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Login"}
+        <Button.Primary
+          style={{ display: "flex", justifyContent: "center" }}
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? (
+            <Spinner visible color="#000" size={16} />
+          ) : (
+            <span>Login</span>
+          )}
         </Button.Primary>
       </form>
     </div>
