@@ -14,7 +14,6 @@ export const InfoToast = () => {
     const cookies = parseCookies();
     if (cookies.info) {
       const info = JSON.parse(cookies.info);
-      console.log(info);
       setType(info.type);
       setMessage(info.message);
     }

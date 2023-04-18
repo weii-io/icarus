@@ -6,3 +6,5 @@ export * from "./x";
 export * from "./document";
 export * from "./clipboard-document";
 export * from "./gear-6-tooths";
+export * from "./github";
+export * from "./logout";

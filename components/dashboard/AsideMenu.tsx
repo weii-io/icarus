@@ -1,14 +1,84 @@
-import Link from "next/link";
-import { Icon } from "../Icon";
-import styles from "./AsideMenu.module.css";
-import { TTab } from "./type";
 import React from "react";
+import Link from "next/link";
+import styles from "./AsideMenu.module.css";
+
+import { Icon } from "../Icon";
+import { Spinner } from "../Spinner";
+import { useRouter } from "next/router";
+import { TTabKey, Tab } from "./dashboard.type";
+import { logoutUserApi } from "../../server";
+import { Button } from "../button";
 
 type Props = {
-  currentTab: TTab;
+  currentTab: TTabKey;
 };
 
-const Tabs = [
+export const AsideMenu: React.FC<Props> = React.memo(({ currentTab }) => {
+  const [targetPath, setTargetPath] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      setLoading(true);
+    });
+    router.events.on("routeChangeComplete", () => {
+      setLoading(false);
+    });
+
+    return () => {
+      router.events.off("routeChangeStart", () => {
+        setLoading(true);
+      });
+      router.events.off("routeChangeComplete", () => {
+        setLoading(false);
+      });
+    };
+  }, [router]);
+
+  return (
+    <>
+      <ul className={styles.container}>
+        {Tabs.map(({ key, icon, label, path }) => (
+          <li key={key} className={key === currentTab ? styles.active : ""}>
+            <Link onClick={() => setTargetPath(path)} href={path}>
+              {icon}
+              <span>{label}</span>
+              <Spinner
+                visible={targetPath === path && loading}
+                size={16}
+                color="#fff"
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <Button.Primary
+        className={styles.logout}
+        onClick={async () => {
+          const logoutUserResponse = await logoutUserApi();
+          window.location.reload();
+        }}
+      >
+        <Icon
+          fillColor="black"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          strokeColor="white"
+          width={16}
+          height={16}
+        >
+          <Icon.Logout />
+        </Icon>
+        <span>Logout</span>
+      </Button.Primary>
+    </>
+  );
+});
+
+AsideMenu.displayName = "AsideMenu";
+
+const Tabs: Tab[] = [
   {
     icon: (
       <Icon
@@ -24,7 +94,7 @@ const Tabs = [
     ),
     label: "Projects",
     key: "projects",
-    link: "/dashboard?tab=projects",
+    path: "/dashboard?tab=projects",
   },
   {
     icon: (
@@ -41,7 +111,7 @@ const Tabs = [
     ),
     label: "Tasks",
     key: "tasks",
-    link: "/dashboard?tab=tasks",
+    path: "/dashboard?tab=tasks",
   },
   {
     icon: (
@@ -58,26 +128,6 @@ const Tabs = [
     ),
     label: "Settings",
     key: "settings",
-    link: "/dashboard?tab=settings",
+    path: "/dashboard?tab=settings",
   },
 ];
-
-export const AsideMenu: React.FC<Props> = (props: Props) => {
-  // TODO: show some kind of loading when user is switching tabs
-
-  return (
-    <ul className={styles.container}>
-      {Tabs.map((tab) => (
-        <li
-          key={tab.key}
-          className={tab.key === props.currentTab ? styles.active : ""}
-        >
-          <Link href={tab.link}>
-            {tab.icon}
-            <span>{tab.label}</span>
-          </Link>
-        </li>
-      ))}
-    </ul>
-  );
-};

@@ -24,10 +24,11 @@ export const createGithubProfileApi = async (
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Cookie: cookie,
       },
       body: JSON.stringify({
-        username,
-        organizationUrl,
+        username: username,
+        // organizationUrl: organizationUrl,
         accessToken: dto.accessToken,
       }),
     });
@@ -39,8 +40,8 @@ export const createGithubProfileApi = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username,
-      organizationUrl,
+      username: username,
+      // organizationUrl,
       accessToken: dto.accessToken,
     }),
   });

@@ -1,6 +1,6 @@
 import { User } from "../interface";
 
-export const getUserGithubOrganizationApi = async (user: User) => {
+export const getUserGithubOrganizationsApi = async (user: User) => {
   const headers = new Headers();
   const url = `https://api.github.com/users/${user.githubProfile.username}/orgs`;
   headers.set("Authorization", `Bearer ${user.githubProfile.accessToken}`);

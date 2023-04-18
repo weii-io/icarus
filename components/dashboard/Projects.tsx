@@ -1,15 +1,15 @@
 import Link from "next/link";
 import {
-  createProjectApi,
-  getMeApi,
+  getGithubOrganizationRepositoriesApi,
   getProjectsApi,
+  getUserGithubOrganizationsApi,
   getUserGithubRepositoriesApi,
 } from "../../server";
-import { CreateProjectDto } from "../../server/dto";
 import { CreateProject } from "./CreateProject";
 import React, { useContext } from "react";
 import { Project } from "../../interface";
 import { DashboardContext } from "../../context";
+import styles from "./Projects.module.css";
 
 type Props = {};
 
@@ -29,50 +29,85 @@ export const Projects: React.FC<Props> = (prosp: Props) => {
   }, []);
 
   const initUserRepositoriesState = React.useCallback(async () => {
-    if (user) {
+    if (user && user?.githubProfile) {
+      // get user personal github repositories
       const getUserGithubRepositoriesResponse =
         await getUserGithubRepositoriesApi(user);
       const userGithubRepositories =
         await getUserGithubRepositoriesResponse.json();
-      setUserGithubRepositories(userGithubRepositories);
+
+      // get user organization github repositories
+      const getUserGithubOrganizationsResponse =
+        await getUserGithubOrganizationsApi(user);
+      const userGithubOrganizations =
+        await getUserGithubOrganizationsResponse.json();
+
+      // map through userGithubOrganizations and get repositories
+      const userGithubOrganizationsRepositories = await Promise.all(
+        userGithubOrganizations.map(async (organization: any) => {
+          const getUserGithubOrganizationRepositoriesResponse =
+            await getGithubOrganizationRepositoriesApi(
+              organization.login,
+              user
+            );
+          const userGithubOrganizationRepositories =
+            await getUserGithubOrganizationRepositoriesResponse.json();
+
+          return userGithubOrganizationRepositories;
+        })
+      );
+
+      setUserGithubRepositories([
+        ...userGithubRepositories,
+        ...userGithubOrganizationsRepositories.flat(),
+      ]);
     }
   }, [user]);
 
+  // TODO: use Promise.all to get projects and user repositories for optimization purposes
   React.useEffect(() => {
     initProjectState();
   }, [initProjectState]);
-
   React.useEffect(() => {
     initUserRepositoriesState();
   }, [initUserRepositoriesState]);
 
-  return (
-    <div>
-      <h1>Projects</h1>
+  // capture event called project created
+  React.useEffect(() => {
+    const handleProjectCreated = () => initProjectState();
+    window.addEventListener("project-created", handleProjectCreated);
+    return () => {
+      window.removeEventListener("project-created", handleProjectCreated);
+    };
+  }, [initProjectState]);
 
-      {user && projects ? (
-        <>
+  return (
+    <div role="contentinfo">
+      <nav className={styles.nav}>
+        <h1>Projects</h1>
+        {user && userGithubRepositories && (
           <CreateProject
-            createProjectApi={(payload: CreateProjectDto) =>
-              createProjectApi(payload)
-            }
             userGithubRepositories={userGithubRepositories}
             githubProfile={user.githubProfile}
           />
-          <div>
-            {projects.map((project) => {
-              return (
-                <div key={project.id}>
-                  <Link href={`/dashboard/projects/${project.id}`}>
-                    <h2>{project.name}</h2>
-                  </Link>
-                  <p>{project.description || "no description"}</p>
-                </div>
-              );
-            })}
-          </div>
-        </>
+        )}
+      </nav>
+      {user && projects ? (
+        <div role="contentinfo">
+          {projects.map((project) => {
+            return (
+              // TODO: change this whole chunk into cards component
+              <div key={project.id}>
+                <Link href={`/dashboard/projects/${project.id}`}>
+                  <h2>{project.name}</h2>
+                </Link>
+                <p>{project.description || "no description"}</p>
+              </div>
+            );
+          })}
+        </div>
       ) : (
+        // TODO: test if this is needed
         <span>Loading...</span>
       )}
     </div>

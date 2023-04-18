@@ -18,15 +18,8 @@ export const Settings: React.FC<Props> = (props: Props) => {
       <Dialog elementRef={dialog} content={dialogContent} />
       {user ? (
         <>
+          {/* TODO: add user setting here */}
           <div>
-            <button
-              onClick={async () => {
-                const logoutUserResponse = await logoutUserApi();
-                window.location.reload();
-              }}
-            >
-              logout
-            </button>
             {user.githubProfile ? (
               <button
                 onClick={async () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { BaseButtonProps } from "./interface";
+import { BaseButtonProps } from "./button.interface";
 import { Primary } from "./Primary";
 import { Secondary } from "./Secondary";
 

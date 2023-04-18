@@ -1,141 +1,89 @@
 import React from "react";
 import { CreateProjectDto } from "../../server/dto";
-import { useRouter } from "next/router";
 import { GithubProfile } from "../../interface";
-import { refreshPage } from "../../utils";
+import { CreateProjectForm } from "./CreateProjectForm";
+import { createProjectApi } from "../../server";
+import { Button } from "../button";
+import styles from "./Projects.module.css";
+import { useRouter } from "next/router";
 
-type Props = {
+type CreateProjectProps = {
   userGithubRepositories?: any[];
-  createProjectApi: (dto: CreateProjectDto) => Promise<Response>;
   githubProfile: GithubProfile;
 };
 
-export const CreateProject: React.FC<Props> = (props: Props) => {
-  const [showError, setShowError] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
-
-  const router = useRouter();
-
+export const CreateProject: React.FC<CreateProjectProps> = ({
+  userGithubRepositories,
+  githubProfile,
+}) => {
   const createProjectForm = React.useRef<HTMLFormElement>(null);
   const createProjectDialog = React.useRef<HTMLDialogElement>(null);
-
   const [createProjectDto, setCreateProjectDto] =
     React.useState<CreateProjectDto>({
       name: "",
       description: "",
-      githubProfileId: undefined,
-      githubRepoUrl: undefined,
+      githubRepoSlug: undefined,
     });
-
   const resetForm = React.useCallback(() => {
-    // clear all the input in the form
     createProjectForm.current?.reset();
-    // reset the state
     setCreateProjectDto({
       name: "",
       description: "",
-      githubProfileId: undefined,
-      githubRepoUrl: undefined,
+      githubRepoSlug: undefined,
     });
-  }, []);
+  }, [createProjectForm, setCreateProjectDto]);
+  const onChangeRepositorySelect = React.useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const selectedRepo = userGithubRepositories?.find(
+        (repo) => repo.full_name === e.target.value
+      );
 
-  const onChangeRepositorySelect = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    if (e.target.value === "") {
-      setCreateProjectDto((dto) => {
-        return {
-          ...dto,
-          githubRepoUrl: undefined,
-        };
+      setCreateProjectDto((dto) => ({
+        ...dto,
+        name: selectedRepo?.name || "",
+        description: selectedRepo?.description || "",
+        githubRepoSlug: selectedRepo?.full_name,
+      }));
+    },
+    [setCreateProjectDto, userGithubRepositories]
+  );
+
+  const handleSubmit = React.useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      const createProjectResponse = await createProjectApi({
+        ...createProjectDto,
+        githubProfileId: githubProfile?.id || undefined,
       });
-      return;
-    }
+      if (!createProjectResponse.ok) {
+        const createProject = await createProjectResponse.json();
+        return;
+      }
 
-    const selectedRepo = props.userGithubRepositories?.find(
-      (repo) => repo.url === e.target.value
-    );
-
-    if (selectedRepo) {
-      setCreateProjectDto((dto) => {
-        return {
-          ...dto,
-          name: selectedRepo.name,
-          description: selectedRepo.description,
-          githubRepoUrl: selectedRepo.url,
-        };
-      });
-    }
-  };
+      dispatchEvent(new CustomEvent("project-created"));
+      createProjectDialog.current?.close();
+      resetForm();
+    },
+    [createProjectDto, githubProfile, resetForm]
+  );
 
   return (
     <div>
-      <button onClick={() => createProjectDialog.current?.showModal()}>
-        create new project
-      </button>
-      <dialog ref={createProjectDialog}>
-        {showError && <p>{errorMessage}</p>}
-        <form
-          ref={createProjectForm}
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const createProjectResponse = await props.createProjectApi({
-              ...createProjectDto,
-              githubProfileId: props.githubProfile.id,
-            });
-            if (!createProjectResponse.ok) {
-              setShowError(true);
-              setErrorMessage("Unable to create project");
-              return;
-            }
-            resetForm();
-            createProjectDialog.current?.close();
-            refreshPage(router);
-          }}
-        >
-          <label htmlFor="projectName">Project Name</label>
-          <input
-            onChange={(e) => {
-              setCreateProjectDto((dto) => {
-                return { ...dto, name: e.target.value };
-              });
-            }}
-            required
-            type="text"
-            name="projectName"
-            id="projectName"
-          />
-          <label htmlFor="projectDescription">Project Description</label>
-          <input
-            onChange={(e) => {
-              setCreateProjectDto((dto) => {
-                return { ...dto, description: e.target.value };
-              });
-            }}
-            type="text"
-            name="projectDescription"
-            id="projectDescription"
-          />
-          {props.userGithubRepositories && (
-            <div>
-              <h1>connect your github repository</h1>
-              <select onChange={onChangeRepositorySelect}>
-                <option value="">select a repository</option>
-                {props.userGithubRepositories.map((repo) => {
-                  return (
-                    <option key={repo.name} value={repo.url}>
-                      {repo.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          )}
-          <button type="submit">Create</button>
-        </form>
-        <button onClick={() => createProjectDialog.current?.close()}>
-          close
-        </button>
+      <Button.Secondary
+        onClick={() => createProjectDialog.current?.showModal()}
+      >
+        Create new project
+      </Button.Secondary>
+      <dialog className={styles.dialog} ref={createProjectDialog}>
+        <CreateProjectForm
+          createProjectDto={createProjectDto}
+          setCreateProjectDto={setCreateProjectDto}
+          userGithubRepositories={userGithubRepositories}
+          onChangeRepositorySelect={onChangeRepositorySelect}
+          handleSubmit={handleSubmit}
+        />
+        <Button.Secondary onClick={() => createProjectDialog.current?.close()}>
+          Close
+        </Button.Secondary>
       </dialog>
     </div>
   );
