@@ -148,13 +148,17 @@ const Register: NextPage = () => {
                 id="confirmPassword"
                 label="Confirm password"
                 value={createUserPayload.confirmPassword}
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                pattern={`^${createUserPayload.password}$`}
-                onInvalid={(event) => {
-                  if (event.currentTarget.validity.patternMismatch)
-                    event.currentTarget.setCustomValidity("Password not match");
+                onChange={(event) => {
+                  InputChangeHandler(event, setCreateUserPayload);
+                  if (
+                    event.currentTarget.value !== createUserPayload.password
+                  ) {
+                    event.currentTarget.setCustomValidity(
+                      "Passwords do not match"
+                    );
+                  } else {
+                    event.currentTarget.setCustomValidity("");
+                  }
                 }}
                 onInput={(event) => {
                   event.currentTarget.setCustomValidity("");

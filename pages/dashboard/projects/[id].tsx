@@ -103,11 +103,7 @@ function Project(props: Props) {
             {`connected to `}
             <Link
               target="_blank"
-              href={`https://github.com/${
-                props.project.githubRepoSlug.split(
-                  "https://api.github.com/repos/"
-                )[1]
-              }`}
+              href={`https://github.com/${props.project.githubRepoSlug}`}
             >
               github
             </Link>
