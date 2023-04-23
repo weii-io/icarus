@@ -96,7 +96,6 @@ export const Projects: React.FC<Props> = (prosp: Props) => {
         <div className={styles.projects} role="contentinfo">
           {projects.map((project) => {
             return (
-              // TODO: change this whole chunk into cards component
               <Card style={{ backgroundColor: "black" }} key={project.id}>
                 <Card.Heading>
                   <h2 style={{ fontWeight: 500 }}>{project.name}</h2>
@@ -120,19 +119,18 @@ export const Projects: React.FC<Props> = (prosp: Props) => {
                   )}
                 </Card.Heading>
                 <Card.Cta>
-                  <Button.Secondary
-                    style={{
-                      marginTop: "1rem",
-                      borderRadius: "4px",
-                    }}
+                  <Link
+                    style={{ marginTop: "1rem" }}
+                    href={`/dashboard/projects/${project.id}`}
                   >
-                    <Link
-                      // style={{ color: "white" }}
-                      href={`/dashboard/projects/${project.id}`}
+                    <Button.Secondary
+                      style={{
+                        borderRadius: "4px",
+                      }}
                     >
                       View Project
-                    </Link>
-                  </Button.Secondary>
+                    </Button.Secondary>
+                  </Link>
                 </Card.Cta>
               </Card>
             );
