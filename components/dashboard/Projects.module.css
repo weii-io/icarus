@@ -13,3 +13,8 @@
   border: none;
   border-radius: 0.5rem;
 }
+
+.projects {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
