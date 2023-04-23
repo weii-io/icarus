@@ -5,6 +5,7 @@ import Dialog from "../Dialog";
 import React from "react";
 import nookies from "nookies";
 import { DashboardContext } from "../../context";
+import { useRouter } from "next/router";
 
 type Props = {};
 
@@ -12,6 +13,8 @@ export const Settings: React.FC<Props> = (props: Props) => {
   const dialog = React.useRef<HTMLDialogElement>(null);
   const [dialogContent, setDialogContent] = React.useState<React.ReactNode>();
   const { user } = React.useContext(DashboardContext);
+
+  const router = useRouter();
 
   return (
     <>
@@ -21,6 +24,7 @@ export const Settings: React.FC<Props> = (props: Props) => {
           {/* TODO: add user setting here */}
           <div>
             {user.githubProfile ? (
+              // TODO: style this button
               <button
                 onClick={async () => {
                   const response = await deleteGithubProfileApi();
@@ -45,13 +49,15 @@ export const Settings: React.FC<Props> = (props: Props) => {
                 disconnect from github
               </button>
             ) : (
-              // TODO: change link to button for security purpose
-              <button>
-                <Link
-                  href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`}
-                >
-                  connect to github
-                </Link>
+              // TODO: style this button
+              <button
+                onClick={() =>
+                  router.push(
+                    `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
+                  )
+                }
+              >
+                connect to github
               </button>
             )}
           </div>

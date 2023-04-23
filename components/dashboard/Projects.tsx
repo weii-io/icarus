@@ -64,13 +64,9 @@ export const Projects: React.FC<Props> = (prosp: Props) => {
     }
   }, [user]);
 
-  // TODO: use Promise.all to get projects and user repositories for optimization purposes
   React.useEffect(() => {
-    initProjectState();
-  }, [initProjectState]);
-  React.useEffect(() => {
-    initUserRepositoriesState();
-  }, [initUserRepositoriesState]);
+    Promise.all([initProjectState(), initUserRepositoriesState()]);
+  }, [initProjectState, initUserRepositoriesState]);
 
   // capture event called project created
   React.useEffect(() => {
@@ -92,7 +88,7 @@ export const Projects: React.FC<Props> = (prosp: Props) => {
           />
         )}
       </nav>
-      {user && projects ? (
+      {user && projects && (
         <div role="contentinfo">
           {projects.map((project) => {
             return (
@@ -106,9 +102,6 @@ export const Projects: React.FC<Props> = (prosp: Props) => {
             );
           })}
         </div>
-      ) : (
-        // TODO: test if this is needed
-        <span>Loading...</span>
       )}
     </div>
   );
