@@ -1,13 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import styles from "./AsideMenu.module.css";
-
-import { Icon } from "../Icon";
-import { Spinner } from "../Spinner";
+import { TTabKey, Tab } from "./aside-menu.type";
 import { useRouter } from "next/router";
-import { TTabKey, Tab } from "./dashboard.type";
-import { logoutUserApi } from "../../server";
-import { Button } from "../button";
+import { Button } from "../../button";
+import { logoutUserApi } from "../../../server";
+import { Icon } from "../../Icon";
+import { Spinner } from "../../Spinner";
 
 type Props = {
   currentTab: TTabKey;
