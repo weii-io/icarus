@@ -1,7 +1,7 @@
-import { Project } from "../../interface";
-import { Icon } from "../Icon";
+import { Project } from "../../../interface";
+import { Icon } from "../../Icon";
 import styles from "./ProjectDropdown.module.css";
-import React, { useCallback } from "react";
+import React from "react";
 
 type Props = {
   project: Project;

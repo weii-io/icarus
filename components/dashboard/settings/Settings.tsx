@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { User } from "../../interface";
-import Dialog from "../Dialog";
+import { User } from "../../../interface";
+import Dialog from "../../Dialog";
 import React from "react";
-import { DashboardContext, SettingsContext } from "../../context";
-import { Account } from "../settings/Account";
+import { DashboardContext, SettingsContext } from "../../../context";
+import { Account } from "./Account";
 
 type Props = {};
 

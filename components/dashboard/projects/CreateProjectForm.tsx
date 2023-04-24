@@ -1,30 +1,29 @@
-import { CreateProjectDto } from "../../server/dto";
-import React, { useCallback } from "react";
-import { Input } from "../input";
-import { Icon } from "../Icon";
-import { Spacer } from "../Spacer";
-import { Button } from "../button";
-import { Spinner } from "../Spinner";
+import React from "react";
+import { CreateProjectContext, ProjectsContext } from "../../../context";
+import { TCreateProjectContext, TProjectsContext } from "../../../context/type";
+import { CreateProjectDto } from "../../../server/dto";
+import { Input } from "../../input";
+import { Icon } from "../../Icon";
+import { Spacer } from "../../Spacer";
+import { Button } from "../../button";
+import { Spinner } from "../../Spinner";
 
-type CreateProjectFormProps = {
-  userGithubRepositories?: any[];
-  onChangeRepositorySelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  createProjectDto: CreateProjectDto;
-  setCreateProjectDto: React.Dispatch<React.SetStateAction<CreateProjectDto>>;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-};
+export const CreateProjectForm: React.FC = () => {
+  const {
+    createProjectDto,
+    setCreateProjectDto,
+    handleSubmit,
+    onChangeRepositorySelect,
+  } = React.useContext(CreateProjectContext) as TCreateProjectContext;
 
-export const CreateProjectForm: React.FC<CreateProjectFormProps> = ({
-  userGithubRepositories,
-  onChangeRepositorySelect,
-  createProjectDto,
-  setCreateProjectDto,
-  handleSubmit,
-}) => {
-  const handleChange = useCallback(
+  const { userGithubRepositories } = React.useContext(
+    ProjectsContext
+  ) as TProjectsContext;
+
+  const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      setCreateProjectDto((dto) => ({
+      setCreateProjectDto((dto: CreateProjectDto) => ({
         ...dto,
         [name]: value,
       }));

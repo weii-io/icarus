@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
-import { SettingsContext } from "../../context";
-import { TSettingsContext } from "../../context/type";
+import { SettingsContext } from "../../../context";
+import { TSettingsContext } from "../../../context/type";
 import React from "react";
-import { Button } from "../button";
-import { deleteGithubProfileApi } from "../../server";
-import { Icon } from "../Icon";
+import { Button } from "../../button";
+import { deleteGithubProfileApi } from "../../../server";
+import { Icon } from "../../Icon";
 
 export const Account = () => {
   const router = useRouter();
