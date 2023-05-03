@@ -13,3 +13,5 @@ export * from "./delete-github-profile";
 export * from "./get-user-github-repositories";
 export * from "./get-user-github-organizations";
 export * from "./get-github-organization-repositories";
+export * from "./get-github-repository-tree";
+export * from "./get-github-repository-branches";

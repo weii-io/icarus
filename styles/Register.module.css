@@ -30,9 +30,9 @@
 }
 
 .googleBtn {
-  width: auto !important;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .googleBtn > svg {

@@ -35,13 +35,13 @@ export const Projects: React.FC<Props> = (props: Props) => {
     if (user && user?.githubProfile) {
       // get user personal github repositories
       const getUserGithubRepositoriesResponse =
-        await getUserGithubRepositoriesApi(user);
+        await getUserGithubRepositoriesApi(user.githubProfile);
       const userGithubRepositories =
         await getUserGithubRepositoriesResponse.json();
 
       // get user organization github repositories
       const getUserGithubOrganizationsResponse =
-        await getUserGithubOrganizationsApi(user);
+        await getUserGithubOrganizationsApi(user.githubProfile);
       const userGithubOrganizations =
         await getUserGithubOrganizationsResponse.json();
 
@@ -50,8 +50,8 @@ export const Projects: React.FC<Props> = (props: Props) => {
         userGithubOrganizations.map(async (organization: any) => {
           const getUserGithubOrganizationRepositoriesResponse =
             await getGithubOrganizationRepositoriesApi(
-              organization.login,
-              user
+              user.githubProfile,
+              organization.login
             );
           const userGithubOrganizationRepositories =
             await getUserGithubOrganizationRepositoriesResponse.json();
@@ -121,7 +121,7 @@ export const Projects: React.FC<Props> = (props: Props) => {
                   <Card.Cta>
                     <Link
                       style={{ marginTop: "1rem" }}
-                      href={`/dashboard/projects/${project.id}`}
+                      href={`/dashboard/projects/${project.id}?tab=about`}
                     >
                       <Button.Secondary
                         style={{

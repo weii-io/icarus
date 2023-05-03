@@ -1,4 +1,5 @@
 import { User } from "../interface";
+import { CreateTaskDto, CreateProjectDto } from "../server/dto";
 
 export type TDashbaordContext = {
   user: User | undefined;
@@ -19,5 +20,11 @@ export type TCreateProjectContext = {
   createProjectDto: CreateProjectDto;
   setCreateProjectDto: React.Dispatch<React.SetStateAction<CreateProjectDto>>;
   onChangeRepositorySelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+};
+
+export type TCreateTaskContext = {
+  createTaskDto: CreateTaskDto;
+  setCreateTaskDto: React.Dispatch<React.SetStateAction<CreateTaskDto>>;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };

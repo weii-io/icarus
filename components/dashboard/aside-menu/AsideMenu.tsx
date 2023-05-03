@@ -55,7 +55,7 @@ export const AsideMenu: React.FC<Props> = React.memo(({ currentTab }) => {
       <Button.Primary
         className={styles.logout}
         onClick={async () => {
-          const logoutUserResponse = await logoutUserApi();
+          await logoutUserApi();
           window.location.reload();
         }}
       >

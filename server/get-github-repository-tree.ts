@@ -1,11 +1,12 @@
 import { GithubProfile } from "../interface";
 
-export const getGithubOrganizationRepositoriesApi = async (
+export const getGithubRepositoryTree = async (
+  branch: string,
   githubProfile: GithubProfile,
-  organizationName: string
+  repoSlug: string
 ) => {
   const headers = new Headers();
-  const url = `https://api.github.com/orgs/${organizationName}/repos`;
+  const url = `https://api.github.com/repos/${repoSlug}/git/trees/${branch}`;
   headers.set("Authorization", `Bearer ${githubProfile.accessToken}`);
   const options: RequestInit = {
     method: "GET",
