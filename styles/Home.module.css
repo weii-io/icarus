@@ -14,3 +14,13 @@
   align-items: center;
   justify-content: center;
 }
+
+.googleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.googleBtn > svg {
+  margin-right: 1rem;
+}

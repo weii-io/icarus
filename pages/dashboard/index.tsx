@@ -1,14 +1,14 @@
 import React from "react";
-import { Project, User } from "../../interface";
+import { User } from "../../interface";
 import { useRouter } from "next/router";
 import { Layout } from "../../components";
 import { GetServerSidePropsContext } from "next";
-import styles from "../../styles/Dashboard.module.css";
-import { Settings } from "../../components/dashboard/Settings";
-import { AsideMenu, Projects, Tasks } from "../../components/dashboard";
+import { Projects, Settings, Tasks } from "../../components/dashboard";
 import { DashboardContext } from "../../context";
 import { getMeApi } from "../../server";
-import { TTabKey } from "../../components/dashboard/dashboard.type";
+import { AsideMenu } from "../../components/dashboard/aside-menu";
+import { TTabKey } from "../../components/dashboard/aside-menu/aside-menu.type";
+import styles from "../../styles/Dashboard.module.css";
 
 type Props = {
   user: User;

@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import React from "react";
-import { Layout } from "../components";
+import { Icon, Layout, Spacer } from "../components";
 import styles from "../styles/Home.module.css";
 import { LoginForm } from "../components/home";
 import { Button } from "../components/button";
@@ -28,6 +28,29 @@ const Home: NextPage = () => {
           <Button.Secondary className={styles.row} type="button">
             <Link href="/register">Create an account</Link>
           </Button.Secondary>
+          <Spacer direction="vertical" size={8} />
+          <div
+            style={{
+              textAlign: "center",
+            }}
+          >
+            or
+          </div>
+          <Spacer direction="vertical" size={8} />
+          {/* TODO: complete this feature */}
+          <Button.Primary type="button" className={styles.googleBtn}>
+            <Icon
+              viewBox="0 0 48 48"
+              width={24}
+              height={24}
+              strokeColor="none"
+              strokeWidth={0}
+              fillColor="none"
+            >
+              <Icon.GoogleColor />
+            </Icon>
+            Sign in with Google
+          </Button.Primary>
         </section>
       </div>
     </Layout>

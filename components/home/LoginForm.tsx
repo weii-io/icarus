@@ -75,6 +75,7 @@ const FormSubmitHandler = async (
     // Create cookie with error message
     // Validation error
     // Create cookie with error message
+    console.log(message);
     setInfoCookie({
       message: Array.isArray(message) ? message.join(", ") : message,
       type: "error",

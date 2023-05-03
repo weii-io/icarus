@@ -10,6 +10,7 @@ import {
   Gear6Tooths,
   Github,
   Logout,
+  ThreeDotsLineHorizontal,
 } from "../icons";
 
 type Props = {
@@ -38,6 +39,7 @@ type IconSubComponents = {
   Gear6Tooths: typeof Gear6Tooths;
   Github: typeof Github;
   Logout: typeof Logout;
+  ThreeDotsLineHorizontal: typeof ThreeDotsLineHorizontal;
 };
 
 export const Icon: React.FC<Props> & IconSubComponents = (props: Props) => {
@@ -66,3 +68,4 @@ Icon.ClipboardDocument = ClipboardDocument;
 Icon.Gear6Tooths = Gear6Tooths;
 Icon.Github = Github;
 Icon.Logout = Logout;
+Icon.ThreeDotsLineHorizontal = ThreeDotsLineHorizontal;

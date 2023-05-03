@@ -4,7 +4,7 @@ import { NextRouter, useRouter } from "next/router";
 import { setCookie, parseCookies, destroyCookie } from "nookies";
 
 import { PasswordStrengthChecker, Tab } from "../components/register";
-import { Icon, Layout } from "../components";
+import { Icon, Layout, Spacer } from "../components";
 import styles from "../styles/Register.module.css";
 import { createUserApi } from "../server";
 import { Button } from "../components/button";
@@ -90,23 +90,30 @@ const Register: NextPage = () => {
             >
               Continue
             </Button.Secondary>
-          </div>
-          <br />
-          <span>or</span>
-          <br />
-          <Button.Primary type="button" className={styles.googleBtn}>
-            <Icon
-              viewBox="0 0 48 48"
-              width={24}
-              height={24}
-              strokeColor="none"
-              strokeWidth={0}
-              fillColor="none"
+            <Spacer direction="vertical" size={8} />
+            <div
+              style={{
+                textAlign: "center",
+              }}
             >
-              <Icon.GoogleColor />
-            </Icon>
-            Sign up with Google
-          </Button.Primary>
+              or
+            </div>
+            <Spacer direction="vertical" size={8} />
+            {/* TODO: complete this feature */}
+            <Button.Primary type="button" className={styles.googleBtn}>
+              <Icon
+                viewBox="0 0 48 48"
+                width={24}
+                height={24}
+                strokeColor="none"
+                strokeWidth={0}
+                fillColor="none"
+              >
+                <Icon.GoogleColor />
+              </Icon>
+              Sign up with Google
+            </Button.Primary>
+          </div>
         </>
       ),
     },

@@ -7,8 +7,20 @@
   font-size: 0.75rem;
   right: 1rem;
   top: 1rem;
+  border-radius: 4px;
+}
+
+.container > p {
+  margin-right: 1rem;
 }
 
 .container > svg {
   margin-right: 1rem;
+}
+
+.close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
 }

@@ -1,23 +1,21 @@
 import React from "react";
-import { CreateProjectDto } from "../../server/dto";
-import { GithubProfile } from "../../interface";
+import { CreateProjectDto } from "../../../server/dto";
 import { CreateProjectForm } from "./CreateProjectForm";
-import { createProjectApi } from "../../server";
-import { Button } from "../button";
+import { createProjectApi } from "../../../server";
+import { Button } from "../../button";
+import { ProjectsContext } from "../../../context";
+import { TProjectsContext } from "../../../context/type";
 import styles from "./Projects.module.css";
-import { useRouter } from "next/router";
+import { CreateProjectContext } from "../../../context/CreateProjectContext";
 
-type CreateProjectProps = {
-  userGithubRepositories?: any[];
-  githubProfile: GithubProfile;
-};
-
-export const CreateProject: React.FC<CreateProjectProps> = ({
-  userGithubRepositories,
-  githubProfile,
-}) => {
+export const CreateProjectWrapper: React.FC = ({}) => {
   const createProjectForm = React.useRef<HTMLFormElement>(null);
   const createProjectDialog = React.useRef<HTMLDialogElement>(null);
+
+  const { userGithubRepositories, user } = React.useContext(
+    ProjectsContext
+  ) as TProjectsContext;
+
   const [createProjectDto, setCreateProjectDto] =
     React.useState<CreateProjectDto>({
       name: "",
@@ -52,18 +50,17 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     async (e: React.FormEvent<HTMLFormElement>) => {
       const createProjectResponse = await createProjectApi({
         ...createProjectDto,
-        githubProfileId: githubProfile?.id || undefined,
+        githubProfileId: user.githubProfile?.id || undefined,
       });
       if (!createProjectResponse.ok) {
         const createProject = await createProjectResponse.json();
         return;
       }
-
       dispatchEvent(new CustomEvent("project-created"));
       createProjectDialog.current?.close();
       resetForm();
     },
-    [createProjectDto, githubProfile, resetForm]
+    [createProjectDto, user, resetForm]
   );
 
   return (
@@ -74,13 +71,16 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
         Create new project
       </Button.Secondary>
       <dialog className={styles.dialog} ref={createProjectDialog}>
-        <CreateProjectForm
-          createProjectDto={createProjectDto}
-          setCreateProjectDto={setCreateProjectDto}
-          userGithubRepositories={userGithubRepositories}
-          onChangeRepositorySelect={onChangeRepositorySelect}
-          handleSubmit={handleSubmit}
-        />
+        <CreateProjectContext.Provider
+          value={{
+            createProjectDto,
+            setCreateProjectDto,
+            onChangeRepositorySelect,
+            handleSubmit,
+          }}
+        >
+          <CreateProjectForm />
+        </CreateProjectContext.Provider>
         <Button.Secondary onClick={() => createProjectDialog.current?.close()}>
           Close
         </Button.Secondary>

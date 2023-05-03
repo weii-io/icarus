@@ -5,7 +5,7 @@ export const setInfoCookie = (info: {
   type: "error" | "success" | "info";
 }) => {
   setCookie(null, "info", JSON.stringify(info), {
-    maxAge: 1,
+    maxAge: 60, // default: 2
     path: "/",
   });
 };
