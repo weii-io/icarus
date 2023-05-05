@@ -58,7 +58,7 @@ const Home: NextPage = () => {
             >
               <Icon.GoogleColor />
             </Icon>
-            Sign in with Google
+            Continue with Google
           </Button.Primary>
         </section>
       </div>

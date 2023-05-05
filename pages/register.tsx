@@ -91,35 +91,6 @@ const Register: NextPage = () => {
             >
               Continue
             </Button.Secondary>
-            <Spacer direction="vertical" size={8} />
-            <div
-              style={{
-                textAlign: "center",
-              }}
-            >
-              or
-            </div>
-            <Spacer direction="vertical" size={8} />
-            {/* TODO: complete this feature */}
-            <Button.Primary
-              onClick={() => {
-                router.push(`${GOOGLE_OAUTH2_URL}`);
-              }}
-              type="button"
-              className={styles.googleBtn}
-            >
-              <Icon
-                viewBox="0 0 48 48"
-                width={24}
-                height={24}
-                strokeColor="none"
-                strokeWidth={0}
-                fillColor="none"
-              >
-                <Icon.GoogleColor />
-              </Icon>
-              Sign up with Google
-            </Button.Primary>
           </div>
         </>
       ),
