@@ -5,8 +5,11 @@ import styles from "../styles/Home.module.css";
 import { LoginForm } from "../components/home";
 import { Button } from "../components/button";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { GOOGLE_OAUTH2_URL } from "../constant/google-oauth-url";
 
 const Home: NextPage = () => {
+  const router = useRouter();
   return (
     <Layout>
       <div className={styles.leftPanel}>
@@ -38,7 +41,13 @@ const Home: NextPage = () => {
           </div>
           <Spacer direction="vertical" size={8} />
           {/* TODO: complete this feature */}
-          <Button.Primary type="button" className={styles.googleBtn}>
+          <Button.Primary
+            onClick={() => {
+              router.push(`${GOOGLE_OAUTH2_URL}`);
+            }}
+            type="button"
+            className={styles.googleBtn}
+          >
             <Icon
               viewBox="0 0 48 48"
               width={24}

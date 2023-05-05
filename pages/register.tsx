@@ -10,6 +10,7 @@ import { createUserApi } from "../server";
 import { Button } from "../components/button";
 import { Input } from "../components/input";
 import { setInfoCookie } from "../utils";
+import { GOOGLE_OAUTH2_URL } from "../constant/google-oauth-url";
 
 interface CreateUserPayload {
   firstName: string;
@@ -100,7 +101,13 @@ const Register: NextPage = () => {
             </div>
             <Spacer direction="vertical" size={8} />
             {/* TODO: complete this feature */}
-            <Button.Primary type="button" className={styles.googleBtn}>
+            <Button.Primary
+              onClick={() => {
+                router.push(`${GOOGLE_OAUTH2_URL}`);
+              }}
+              type="button"
+              className={styles.googleBtn}
+            >
               <Icon
                 viewBox="0 0 48 48"
                 width={24}
@@ -301,12 +308,6 @@ const FormSubmitHandler = async (
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  /** middleware */
-  // const publicRouteMiddleware = await PublicRouteMiddleware(context);
-  // if (publicRouteMiddleware.redirect) {
-  //   return publicRouteMiddleware;
-  // }
-
   return {
     props: {},
   };
