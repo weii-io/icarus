@@ -8,4 +8,5 @@ export interface User {
   password: string;
   username: string;
   githubProfile: GithubProfile;
+  googleProfileId?: string;
 }

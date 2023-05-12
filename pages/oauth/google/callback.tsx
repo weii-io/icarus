@@ -31,19 +31,19 @@ export const getServerSideProps = async (
     response.json()
   )) as GoogleProfile;
 
-  const temporaryPassword = generateRandomPassword();
-  const createUserResponse = await createUserApi({
+  await createUserApi({
     email: email,
     firstName: given_name,
     lastName: name,
-    password: temporaryPassword,
-    confirmPassword: temporaryPassword,
+    password: `${process.env.NEXT_PUBLIC_TEMPORARY_PASSWORD_SIGNATURE}${googleProfileId}`,
+    confirmPassword: `${process.env.NEXT_PUBLIC_TEMPORARY_PASSWORD_SIGNATURE}${googleProfileId}`,
     googleProfileId: googleProfileId,
   });
 
   const loginUserResponse = await loginUserApi({
     email,
-    password: temporaryPassword,
+    // can pass any string in here as long as it fits the criteria for strong password
+    password: `${process.env.NEXT_PUBLIC_TEMPORARY_PASSWORD_SIGNATURE}${googleProfileId}`,
     googleProfileId: googleProfileId,
   });
 

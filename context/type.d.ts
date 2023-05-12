@@ -1,4 +1,4 @@
-import { User } from "../interface";
+import { Branch, User } from "../interface";
 import { CreateTaskDto, CreateProjectDto } from "../server/dto";
 
 export type TDashbaordContext = {
@@ -27,4 +27,8 @@ export type TCreateTaskContext = {
   createTaskDto: CreateTaskDto;
   setCreateTaskDto: React.Dispatch<React.SetStateAction<CreateTaskDto>>;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+};
+
+export type TGithubFileTreesContext = {
+  currentDirectory: Branch[];
 };

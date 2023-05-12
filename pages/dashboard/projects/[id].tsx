@@ -7,6 +7,7 @@ import Link from "next/link";
 import { AsideMenu } from "../../../components/projects/aside-menu";
 import { TTabKey } from "../../../components/projects/aside-menu/aside-menu.type";
 import { useRouter } from "next/router";
+import { GithubFileTrees } from "../../../components/projects";
 
 type Props = {
   project: Project;
@@ -18,13 +19,20 @@ type Props = {
 // TODO: check whether or not to add a sync feature to save github file to database
 // TODO: add a sync feature to save database to github file
 
-const menuContent = {
-  about: <div>about</div>,
-  advanced: <div>advanced</div>,
-};
-
 function Project(props: Props) {
   const router = useRouter();
+
+  const menuContent = {
+    about: (
+      <GithubFileTrees
+        branch="dev"
+        githubProfile={props.project.githubProfile}
+        repoSlug={props.project.githubRepoSlug as string}
+        key={props.project.id}
+      />
+    ),
+    advanced: <div>advanced</div>,
+  };
   return (
     <Layout className={styles.layout}>
       <aside style={{ position: "relative" }}>
