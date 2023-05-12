@@ -9,3 +9,5 @@ export * from "./gear-6-tooths";
 export * from "./github";
 export * from "./logout";
 export * from "./three-dots-line-horizontal";
+export * from "./folder";
+export * from "./file";

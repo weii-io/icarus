@@ -32,6 +32,7 @@ export const getServerSideProps = async (
   );
 
   if (!createGithubProfileResponse.ok) {
+    console.log(createGithubProfileResponse);
     // set cookie error message unable to connect to github, please contact me@weii.io
     console.log("create github profile error");
   }
