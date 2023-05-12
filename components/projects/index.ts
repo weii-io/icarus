@@ -1,1 +1,1 @@
-export * from "./GithubFileTrees";
+export * from "./github-file-trees/GithubFileTrees";

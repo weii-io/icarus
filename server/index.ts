@@ -17,3 +17,4 @@ export * from "./get-github-repository-tree";
 export * from "./get-github-repository-branches";
 export * from "./get-google-oauth-token";
 export * from "./get-google-user-profile";
+export * from "./get-github-blob";
