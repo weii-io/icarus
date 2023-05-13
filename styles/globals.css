@@ -43,3 +43,7 @@ a {
     opacity: 1;
   }
 }
+
+pre {
+  white-space: break-spaces;
+}
