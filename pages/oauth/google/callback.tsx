@@ -5,7 +5,7 @@ import {
   getGoogleOAuthToken,
   getGoogleUserProfile,
   loginUserApi,
-} from "../../../server";
+} from "../../../service";
 import { GoogleProfile } from "../../../interface";
 import { generateRandomPassword } from "../../../utils";
 

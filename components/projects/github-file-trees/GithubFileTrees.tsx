@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./GithubFileTrees.module.css";
 import { Branch, GithubProfile, GithubTree } from "../../../interface";
-import { getGithubBlob, getGithubRepositoryTree } from "../../../server";
+import { getGithubBlob, getGithubRepositoryTree } from "../../../service";
 import { GithubFileTreesContext } from "../../../context";
 import { Icon } from "../../Icon";
 import { Spacer } from "../../Spacer";

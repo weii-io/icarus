@@ -1,7 +1,7 @@
 import { NextRouter, useRouter } from "next/router";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import React from "react";
-import { loginUserApi } from "../../server";
+import { loginUserApi } from "../../service";
 import { Input } from "../input/Input";
 import { Button } from "../button";
 import { setInfoCookie } from "../../utils";

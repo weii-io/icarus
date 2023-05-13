@@ -1,5 +1,5 @@
 import { Branch, User } from "../interface";
-import { CreateTaskDto, CreateProjectDto } from "../server/dto";
+import { CreateTaskDto, CreateProjectDto } from "../service/dto";
 
 export type TDashbaordContext = {
   user: User | undefined;

@@ -6,7 +6,7 @@ import { setCookie, parseCookies, destroyCookie } from "nookies";
 import { PasswordStrengthChecker, Tab } from "../components/register";
 import { Icon, Layout, Spacer } from "../components";
 import styles from "../styles/Register.module.css";
-import { createUserApi } from "../server";
+import { createUserApi } from "../service";
 import { Button } from "../components/button";
 import { Input } from "../components/input";
 import { setInfoCookie } from "../utils";

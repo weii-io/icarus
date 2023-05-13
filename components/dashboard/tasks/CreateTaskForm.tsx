@@ -1,7 +1,7 @@
 import { CreateTaskContext } from "../../../context";
 import React from "react";
 import { TCreateTaskContext } from "../../../context/type";
-import { CreateTaskDto } from "../../../server/dto";
+import { CreateTaskDto } from "../../../service/dto";
 import { Input } from "../../input";
 
 export const CreateTaskForm = () => {

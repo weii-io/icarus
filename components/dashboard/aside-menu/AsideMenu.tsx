@@ -4,7 +4,7 @@ import styles from "./AsideMenu.module.css";
 import { TTabKey, Tab } from "./aside-menu.type";
 import { useRouter } from "next/router";
 import { Button } from "../../button";
-import { logoutUserApi } from "../../../server";
+import { logoutUserApi } from "../../../service";
 import { Icon } from "../../Icon";
 import { Spinner } from "../../Spinner";
 

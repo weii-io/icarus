@@ -3,7 +3,7 @@ import React from "react";
 import {
   createGithubProfileApi,
   getGithubAccessTokenApi,
-} from "../../../server";
+} from "../../../service";
 
 type Props = {};
 

@@ -7,7 +7,7 @@ import {
   getProjectsApi,
   getUserGithubOrganizationsApi,
   getUserGithubRepositoriesApi,
-} from "../../../server";
+} from "../../../service";
 import styles from "./Projects.module.css";
 import { Card } from "../../card";
 import { Icon } from "../../Icon";

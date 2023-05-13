@@ -1,6 +1,6 @@
 import React from "react";
 import { Project, Task } from "../../../interface";
-import { getProjectByIdApi, getTasksApi } from "../../../server";
+import { getProjectByIdApi, getTasksApi } from "../../../service";
 import { Layout } from "../../../components";
 import styles from "../../../styles/Project.module.css";
 import Link from "next/link";

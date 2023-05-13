@@ -1,7 +1,7 @@
 import React from "react";
-import { CreateProjectDto } from "../../../server/dto";
+import { CreateProjectDto } from "../../../service/dto";
 import { CreateProjectForm } from "./CreateProjectForm";
-import { createProjectApi } from "../../../server";
+import { createProjectApi } from "../../../service";
 import { Button } from "../../button";
 import { ProjectsContext } from "../../../context";
 import { TProjectsContext } from "../../../context/type";

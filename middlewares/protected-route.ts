@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getMeApi } from "../server";
+import { getMeApi } from "../service";
 
 export async function protectedRouteMiddleware(req: NextRequest) {
   const getMeResponse = await getMeApi(req.headers.get("Cookie") as string);

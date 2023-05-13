@@ -1,7 +1,7 @@
 import React from "react";
 import { CreateProjectContext, ProjectsContext } from "../../../context";
 import { TCreateProjectContext, TProjectsContext } from "../../../context/type";
-import { CreateProjectDto } from "../../../server/dto";
+import { CreateProjectDto } from "../../../service/dto";
 import { Input } from "../../input";
 import { Icon } from "../../Icon";
 import { Spacer } from "../../Spacer";

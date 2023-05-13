@@ -3,7 +3,7 @@ import { SettingsContext } from "../../../context";
 import { TSettingsContext } from "../../../context/type";
 import React from "react";
 import { Button } from "../../button";
-import { deleteGithubProfileApi } from "../../../server";
+import { deleteGithubProfileApi } from "../../../service";
 import { Icon } from "../../Icon";
 
 export const Account = () => {

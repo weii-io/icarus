@@ -2,10 +2,10 @@ import { Button } from "../../button";
 import React, { FormEvent } from "react";
 import styles from "./Tasks.module.css";
 import { Project } from "../../../interface";
-import { CreateTaskDto } from "../../../server/dto";
+import { CreateTaskDto } from "../../../service/dto";
 import { CreateTaskForm } from "./CreateTaskForm";
 import { CreateTaskContext } from "../../../context";
-import { createTaskApi } from "../../../server";
+import { createTaskApi } from "../../../service";
 
 type Props = {
   project?: Project;

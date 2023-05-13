@@ -5,7 +5,7 @@ import { Layout } from "../../components";
 import { GetServerSidePropsContext } from "next";
 import { Projects, Settings, Tasks } from "../../components/dashboard";
 import { DashboardContext } from "../../context";
-import { getMeApi } from "../../server";
+import { getMeApi } from "../../service";
 import { AsideMenu } from "../../components/dashboard/aside-menu";
 import { TTabKey } from "../../components/dashboard/aside-menu/aside-menu.type";
 import styles from "../../styles/Dashboard.module.css";
