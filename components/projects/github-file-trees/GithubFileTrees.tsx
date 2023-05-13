@@ -1,21 +1,18 @@
 import React from "react";
-import { GithubProfile, GithubTree } from "../../../interface";
+import styles from "./GithubFileTrees.module.css";
+import { Branch, GithubProfile, GithubTree } from "../../../interface";
 import { getGithubBlob, getGithubRepositoryTree } from "../../../server";
-import styles from "./GithubFileTress.module.css";
 import { GithubFileTreesContext } from "../../../context";
 import { Icon } from "../../Icon";
 import { Spacer } from "../../Spacer";
+import { DirectoryPath } from "./DirectoryPath";
+import { sortGithubTree } from "./utils";
+import { CodeContent } from "./CodeContent";
 
 type Props = {
   branch: string;
   repoSlug: string;
   githubProfile: GithubProfile;
-};
-
-type Branch = {
-  name: string;
-  sha: string;
-  type: string;
 };
 
 export const GithubFileTrees = (props: Props) => {
@@ -29,8 +26,37 @@ export const GithubFileTrees = (props: Props) => {
     },
   ]);
 
+  const onClickTreeDirectoryHandler = (tree: GithubTree) => {
+    setDirectory([
+      ...directory,
+      {
+        name: tree.path,
+        sha: tree.sha,
+        type: tree.type,
+      },
+    ]);
+  };
+
+  const onClickBlobDirectoryHandler = (tree: GithubTree) => {
+    setDirectory([
+      ...directory.slice(0, directory.length - 1),
+      {
+        name: tree.path,
+        sha: tree.sha,
+        type: tree.type,
+      },
+    ]);
+    getGithubBlob(props.repoSlug, tree.sha).then(async (response) => {
+      const data = await response.json();
+      if (data.content === "")
+        setBlob(Buffer.from("This file is empty").toString("base64"));
+      else setBlob(data.content);
+    });
+  };
+
   React.useEffect(() => {
     if (directory[directory.length - 1].type === "tree") {
+      // get github tree
       getGithubRepositoryTree(
         directory[directory.length - 1].sha,
         props.githubProfile,
@@ -38,139 +64,35 @@ export const GithubFileTrees = (props: Props) => {
       ).then(async (response) => {
         if (response.ok) {
           const data = await response.json();
-          setTrees(
-            data.tree.sort((a: GithubTree, b: GithubTree) => {
-              // Sort by type: tree first, then blob
-              if (a.type === "tree" && b.type === "blob") {
-                return -1; // a is tree, b is blob
-              }
-              if (a.type === "blob" && b.type === "tree") {
-                return 1; // a is blob, b is tree
-              }
-
-              // Sort alphabetically within each type
-              return a.path.localeCompare(b.path);
-            })
-          );
+          setTrees(sortGithubTree(data.tree));
         }
       });
+      // set blob to empty
+      setBlob("");
     }
   }, [directory, props.githubProfile, props.repoSlug, blob]);
 
   return (
     <GithubFileTreesContext.Provider
       value={{
-        currentDirectory: directory,
+        directory,
+        setDirectory,
+        blob,
       }}
     >
       <div className={styles.container}>
-        <div
-          style={{
-            alignItems: "flex-end",
-            backgroundColor: "black",
-            color: "white",
-            margin: "1rem",
-            padding: ".5rem",
-            position: "sticky",
-            top: 0,
-          }}
-          className="row"
-        >
-          {directory.map((branch, index) => {
-            return (
-              <div className="row" key={index}>
-                <Spacer direction="horizontal" size={16} />
-                <div>
-                  <span>{index === 0 ? "" : ">"}</span>
-                  <Spacer direction="horizontal" size={16} />
-                </div>
-                <div
-                  className={styles.directory}
-                  onClick={() => {
-                    if (blob) setBlob("");
-                    setDirectory(directory.slice(0, index + 1));
-                  }}
-                >
-                  {index !== 0 && (
-                    <>
-                      {branch.type === "tree" ? (
-                        <Icon
-                          fillColor="white"
-                          strokeColor="white"
-                          strokeWidth={1.5}
-                          height={16}
-                          width={16}
-                          viewBox="0 0 30 30"
-                        >
-                          <Icon.Folder />
-                        </Icon>
-                      ) : (
-                        <Icon
-                          fillColor="black"
-                          strokeColor="white"
-                          strokeWidth={1.5}
-                          height={16}
-                          width={16}
-                          viewBox="0 0 50 50"
-                        >
-                          <Icon.File />
-                        </Icon>
-                      )}
-                      <Spacer direction="horizontal" size={4} />
-                    </>
-                  )}
-                  <span>{branch.name}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <ul className={styles.listContainer}>
-          {blob && <code>{Buffer.from(blob, "base64").toString("utf-8")}</code>}
+        <DirectoryPath />
+        <ul className={styles.list}>
+          <CodeContent />
           {!blob &&
             trees.map((tree, index) => {
               return (
                 <li
                   onClick={() => {
-                    if (tree.type === "tree") {
-                      setDirectory([
-                        ...directory,
-                        {
-                          name: tree.path,
-                          sha: tree.sha,
-                          type: tree.type,
-                        },
-                      ]);
-                    } else {
-                      if (tree.type === "file") {
-                        setDirectory([
-                          ...directory.slice(0, directory.length - 1),
-                          {
-                            name: tree.path,
-                            sha: tree.sha,
-                            type: tree.type,
-                          },
-                        ]);
-                      } else {
-                        setDirectory([
-                          ...directory,
-                          {
-                            name: tree.path,
-                            sha: tree.sha,
-                            type: tree.type,
-                          },
-                        ]);
-                      }
-
-                      getGithubBlob(props.repoSlug, tree.sha).then(
-                        async (response) => {
-                          const data = await response.json();
-                          setBlob(data.content);
-                        }
-                      );
-                    }
+                    if (tree.type === "tree") onClickTreeDirectoryHandler(tree);
+                    else onClickBlobDirectoryHandler(tree);
                   }}
-                  className={styles.list}
+                  className={styles.listItem}
                   key={index}
                 >
                   {tree.type === "blob" ? (

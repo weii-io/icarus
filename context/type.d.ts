@@ -30,5 +30,7 @@ export type TCreateTaskContext = {
 };
 
 export type TGithubFileTreesContext = {
-  currentDirectory: Branch[];
+  directory: Branch[];
+  setDirectory: React.Dispatch<React.SetStateAction<Branch[]>>;
+  blob: string;
 };

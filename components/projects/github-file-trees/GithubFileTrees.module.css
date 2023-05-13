@@ -3,7 +3,7 @@
   overflow-y: scroll;
 }
 
-.listContainer {
+.list {
   padding: 1rem;
   list-style-type: none;
   border: 1px solid black;
@@ -11,11 +11,11 @@
   border-radius: 4px;
 }
 
-.listContainer > :not(:last-child) {
+.list > :not(:last-child) {
   margin-bottom: 1rem;
 }
 
-.list {
+.listItem {
   cursor: pointer;
   color: #161b22;
   padding: 0.5rem;
@@ -24,13 +24,6 @@
   align-items: center;
 }
 
-.list:hover {
+.listItem:hover {
   background-color: #f5f5f5;
-}
-
-.directory {
-  cursor: pointer;
-  text-decoration: underline;
-  display: flex;
-  align-items: center;
 }

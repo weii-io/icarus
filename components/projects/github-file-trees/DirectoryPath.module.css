@@ -1,0 +1,16 @@
+.container {
+  align-items: flex-end;
+  background-color: black;
+  color: white;
+  margin: 1rem;
+  padding: 0.5rem;
+  position: sticky;
+  top: 0;
+}
+
+.listItem {
+  cursor: pointer;
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+}
