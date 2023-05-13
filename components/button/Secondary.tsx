@@ -1,9 +1,10 @@
+import React from "react";
 import classNames from "classnames";
 import styles from "./Button.module.css";
-import { BaseButtonProps } from "./button.interface";
+import { TBaseButtonProps } from "./button.type";
 
-export const Secondary: React.FC<BaseButtonProps> = (
-  props: BaseButtonProps
+export const Secondary: React.FC<TBaseButtonProps> = (
+  props: TBaseButtonProps
 ) => {
   return (
     <button

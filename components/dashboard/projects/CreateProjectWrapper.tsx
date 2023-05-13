@@ -6,7 +6,7 @@ import { Button } from "../../button";
 import { ProjectsContext } from "../../../context";
 import { TProjectsContext } from "../../../context/type";
 import styles from "./Projects.module.css";
-import { CreateProjectContext } from "../../../context/CreateProjectContext";
+import { CreateProjectContext } from "../../../context/CreateProject.context";
 
 export const CreateProjectWrapper: React.FC = ({}) => {
   const createProjectForm = React.useRef<HTMLFormElement>(null);

@@ -1,5 +1,5 @@
-import { GithubProfile } from "./github-profile";
-import { User } from "./user";
+import { GithubProfile } from "./github-profile.interface";
+import { User } from "./user.interface";
 
 export interface Project {
   id: number;

@@ -1,5 +1,5 @@
-import { Project } from "./project";
-import { User } from "./user";
+import { Project } from "./project.interface";
+import { User } from "./user.interface";
 
 export interface Task {
   id: number;

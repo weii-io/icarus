@@ -1,20 +1,20 @@
 import React from "react";
+import styles from "./Card.module.css";
 import { Heading } from "./Heading";
 import { Description } from "./Description";
-import styles from "./Card.module.css";
 import { Cta } from "./Cta";
 
-type Props = {
+type TProps = {
   children: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-type CardSubComponents = {
+type TSubComponents = {
   Heading: typeof Heading;
   Description: typeof Description;
   Cta: typeof Cta;
 };
 
-export const Card: React.FC<Props> & CardSubComponents = (props: Props) => {
+export const Card: React.FC<TProps> & TSubComponents = (props: TProps) => {
   return (
     <div {...props} className={styles.container} role="card">
       {props.children}

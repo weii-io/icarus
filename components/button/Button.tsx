@@ -1,14 +1,14 @@
 import React from "react";
-import { BaseButtonProps } from "./button.interface";
 import { Primary } from "./Primary";
 import { Secondary } from "./Secondary";
+import { TBaseButtonProps } from "./button.type";
 
-type ButtonSubComponents = {
-  Primary: React.FC<BaseButtonProps>;
-  Secondary: React.FC<BaseButtonProps>;
+type TSubComponents = {
+  Primary: React.FC<TBaseButtonProps>;
+  Secondary: React.FC<TBaseButtonProps>;
 };
 
-export const Button: ButtonSubComponents = {
+export const Button: TSubComponents = {
   Primary,
   Secondary,
 };
