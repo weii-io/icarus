@@ -1,20 +1,18 @@
-import { NextRouter, useRouter } from "next/router";
-import { destroyCookie, parseCookies, setCookie } from "nookies";
 import React from "react";
-import { loginUserApi } from "../../service";
+import { useRouter } from "next/router";
 import { Input } from "../input/Input";
 import { Button } from "../button";
 import { setInfoCookie } from "../../utils";
 import { Spinner } from "../Spinner";
+import { IcarusApiAuthService } from "../../service/icarus-api/auth";
 
 export const LoginForm = () => {
   const router = useRouter();
-  const [loading, setLoading] = React.useState(false);
-
-  const [loginPayload, setLoginPayload] = React.useState({
+  const [payload, setPayload] = React.useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = React.useState(false);
 
   return (
     <div>
@@ -22,7 +20,7 @@ export const LoginForm = () => {
         onSubmit={async (event) => {
           event.preventDefault();
           setLoading(true);
-          const formSubmitted = await FormSubmitHandler(event, loginPayload);
+          const formSubmitted = await FormSubmitHandler(event, payload);
           if (formSubmitted) {
             router.push("/dashboard");
           } else {
@@ -34,7 +32,7 @@ export const LoginForm = () => {
           <Input.Email
             label="Email"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              InputChangeHandler(event, setLoginPayload)
+              InputChangeHandler(event, setPayload)
             }
           />
         </div>
@@ -43,7 +41,7 @@ export const LoginForm = () => {
           <Input.Password
             label="Password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              InputChangeHandler(event, setLoginPayload)
+              InputChangeHandler(event, setPayload)
             }
           />
         </div>
@@ -69,13 +67,12 @@ const FormSubmitHandler = async (
   payload: any
 ) => {
   event.preventDefault();
-  const loginUserResponse = await loginUserApi(payload);
+  const loginUserResponse = await new IcarusApiAuthService().login(payload);
   if (!loginUserResponse.ok) {
-    const { statusCode, message } = await loginUserResponse.json();
+    const { message } = await loginUserResponse.json();
     // Create cookie with error message
     // Validation error
     // Create cookie with error message
-    console.log(message);
     setInfoCookie({
       message: Array.isArray(message) ? message.join(", ") : message,
       type: "error",

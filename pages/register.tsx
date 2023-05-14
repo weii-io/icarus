@@ -1,16 +1,14 @@
 import type { GetServerSidePropsContext, NextPage } from "next";
 import React from "react";
 import { NextRouter, useRouter } from "next/router";
-import { setCookie, parseCookies, destroyCookie } from "nookies";
 
 import { PasswordStrengthChecker, Tab } from "../components/register";
-import { Icon, Layout, Spacer } from "../components";
+import { Icon, Layout } from "../components";
 import styles from "../styles/Register.module.css";
-import { createUserApi } from "../service";
 import { Button } from "../components/button";
 import { Input } from "../components/input";
 import { setInfoCookie } from "../utils";
-import { GOOGLE_OAUTH2_URL } from "../constant/google-oauth-url";
+import { IcarusApiAuthService } from "../service/icarus-api/auth";
 
 interface CreateUserPayload {
   firstName: string;
@@ -244,7 +242,9 @@ const FormSubmitHandler = async (
 ) => {
   event.preventDefault();
   try {
-    const createUserResponse = await createUserApi(payload);
+    const createUserResponse = await new IcarusApiAuthService().register(
+      payload
+    );
     if (!createUserResponse.ok) {
       const { message } = await createUserResponse.json();
       setInfoCookie({

@@ -2,31 +2,30 @@ import Link from "next/link";
 import React from "react";
 import { DashboardContext, ProjectsContext } from "../../../context";
 import { Project, User } from "../../../interface";
-import {
-  getGithubOrganizationRepositoriesApi,
-  getProjectsApi,
-  getUserGithubOrganizationsApi,
-  getUserGithubRepositoriesApi,
-} from "../../../service";
+
 import styles from "./Projects.module.css";
 import { Card } from "../../card";
 import { Icon } from "../../Icon";
 import { Button } from "../../button";
-import { CreateProjectWrapper } from "./CreateProjectWrapper";
+import { CreateProjectDialog } from "./Dialog";
+import { IcarusApiProjectService } from "../../../service/icarus-api/project";
+import { GithubApiUserService } from "../../../service/github/user";
+import { GithubApiOrganizationService } from "../../../service/github/organization";
 
 type Props = {};
 
+// TODO: add dropdown
 export const Projects: React.FC<Props> = (props: Props) => {
+  const { user } = React.useContext(DashboardContext);
+
+  const [projects, setProjects] = React.useState<Project[]>([]);
   const [userGithubRepositories, setUserGithubRepositories] = React.useState<
     any[]
   >([]);
 
-  const { user } = React.useContext(DashboardContext);
-
-  const [projects, setProjects] = React.useState<Project[]>([]);
-
   const initProjectState = React.useCallback(async () => {
-    const getProjectsResponse = await getProjectsApi();
+    const getProjectsResponse =
+      await new IcarusApiProjectService().getProjects();
     const projects = await getProjectsResponse.json();
     setProjects(projects);
   }, []);
@@ -34,14 +33,18 @@ export const Projects: React.FC<Props> = (props: Props) => {
   const initUserRepositoriesState = React.useCallback(async () => {
     if (user && user?.githubProfile) {
       // get user personal github repositories
-      const getUserGithubRepositoriesResponse =
-        await getUserGithubRepositoriesApi(user.githubProfile);
+      const getUserGithubRepositoriesResponse = await new GithubApiUserService(
+        user.githubProfile.username,
+        user.githubProfile.accessToken
+      ).getRepository();
       const userGithubRepositories =
         await getUserGithubRepositoriesResponse.json();
 
       // get user organization github repositories
-      const getUserGithubOrganizationsResponse =
-        await getUserGithubOrganizationsApi(user.githubProfile);
+      const getUserGithubOrganizationsResponse = await new GithubApiUserService(
+        user.githubProfile.username,
+        user.githubProfile.accessToken
+      ).getOrganization();
       const userGithubOrganizations =
         await getUserGithubOrganizationsResponse.json();
 
@@ -49,10 +52,10 @@ export const Projects: React.FC<Props> = (props: Props) => {
       const userGithubOrganizationsRepositories = await Promise.all(
         userGithubOrganizations.map(async (organization: any) => {
           const getUserGithubOrganizationRepositoriesResponse =
-            await getGithubOrganizationRepositoriesApi(
-              user.githubProfile,
-              organization.login
-            );
+            await new GithubApiOrganizationService(
+              organization.login,
+              user.githubProfile.accessToken
+            ).getRepositories();
           const userGithubOrganizationRepositories =
             await getUserGithubOrganizationRepositoriesResponse.json();
 
@@ -90,7 +93,7 @@ export const Projects: React.FC<Props> = (props: Props) => {
       <div role="contentinfo">
         <nav className={styles.nav}>
           <h1>Projects</h1>
-          {user && userGithubRepositories && <CreateProjectWrapper />}
+          {user && userGithubRepositories && <CreateProjectDialog />}
         </nav>
         {user && projects && (
           <div className={styles.projects} role="contentinfo">

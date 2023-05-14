@@ -1,13 +1,13 @@
 import { CreateTaskContext } from "../../../context";
 import React from "react";
-import { TCreateTaskContext } from "../../../context/type";
 import { CreateTaskDto } from "../../../service/dto";
 import { Input } from "../../input";
+import { ICreateTaskContext } from "../../../context/interface";
 
 export const CreateTaskForm = () => {
   const { setCreateTaskDto, handleSubmit, createTaskDto } = React.useContext(
     CreateTaskContext
-  ) as TCreateTaskContext;
+  ) as ICreateTaskContext;
 
   const handleInputChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

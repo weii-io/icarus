@@ -1,38 +1,40 @@
 import React from "react";
-import { User } from "../../interface";
+import styles from "../../styles/Dashboard.module.css";
 import { useRouter } from "next/router";
-import { Layout } from "../../components";
 import { GetServerSidePropsContext } from "next";
+
+import { User } from "../../interface";
+import { Layout } from "../../components";
 import { Projects, Settings, Tasks } from "../../components/dashboard";
 import { DashboardContext } from "../../context";
-import { getMeApi } from "../../service";
 import { AsideMenu } from "../../components/dashboard/aside-menu";
-import { TTabKey } from "../../components/dashboard/aside-menu/aside-menu.type";
-import styles from "../../styles/Dashboard.module.css";
+import { TTabKey } from "../../components/dashboard/aside-menu/type";
+import { IcarusApiUserService } from "../../service/icarus-api/user";
 
-type Props = {
+type TProps = {
   user: User;
 };
 
-const menuContent = {
+const content = {
   projects: <Projects />,
   settings: <Settings />,
   tasks: <Tasks />,
 };
 
-function Dashboard(props: Props) {
+function Dashboard(props: TProps) {
   const router = useRouter();
+  const tab = router.query.tab as TTabKey;
 
   return (
     <>
       <Layout className={styles.layout}>
         <aside style={{ position: "relative" }}>
           <h1>Icarus</h1>
-          <AsideMenu currentTab={router.query.tab as TTabKey} />
+          <AsideMenu currentTab={tab} />
         </aside>
         <section>
           <DashboardContext.Provider value={{ user: props.user }}>
-            {menuContent[router.query.tab as TTabKey]}
+            {content[tab]}
           </DashboardContext.Provider>
         </section>
       </Layout>
@@ -52,10 +54,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const getMeResponse = await getMeApi(context.req.headers.cookie as string);
+  const getCurrentUserResponse =
+    await new IcarusApiUserService().getCurrentUser(
+      context.req.headers.cookie as string
+    );
 
-  if (getMeResponse.ok) {
-    const user = await getMeResponse.json();
+  if (getCurrentUserResponse.ok) {
+    const user = await getCurrentUserResponse.json();
     return {
       props: {
         user,

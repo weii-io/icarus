@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { SettingsContext } from "../../../context";
-import { TSettingsContext } from "../../../context/type";
 import React from "react";
 import { Button } from "../../button";
-import { deleteGithubProfileApi } from "../../../service";
 import { Icon } from "../../Icon";
+import { ISettingsContext } from "../../../context/interface";
+import { IcarusApiGithubProfileService } from "../../../service/icarus-api/github-profile";
 
 export const Account = () => {
   return (
@@ -47,7 +47,7 @@ export const Account = () => {
 const Github = () => {
   const { user, dialog, setDialogContent } = React.useContext(
     SettingsContext
-  ) as TSettingsContext;
+  ) as ISettingsContext;
   const router = useRouter();
 
   if (user.githubProfile)
@@ -59,7 +59,8 @@ const Github = () => {
           justifyContent: "center",
         }}
         onClick={async () => {
-          const response = await deleteGithubProfileApi();
+          const response =
+            await new IcarusApiGithubProfileService().deleteGithubProfile();
           if (!response.ok) {
             // show popup
             dialog.current?.showModal();

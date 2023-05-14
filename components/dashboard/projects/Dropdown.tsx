@@ -1,6 +1,6 @@
 import { Project } from "../../../interface";
 import { Icon } from "../../Icon";
-import styles from "./ProjectDropdown.module.css";
+import styles from "./Dropdown.module.css";
 import React from "react";
 
 type Props = {

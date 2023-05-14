@@ -1,20 +1,20 @@
 import React from "react";
 import { CreateProjectDto } from "../../../service/dto";
-import { CreateProjectForm } from "./CreateProjectForm";
-import { createProjectApi } from "../../../service";
+import { CreateProjectForm } from "./Form";
 import { Button } from "../../button";
 import { ProjectsContext } from "../../../context";
-import { TProjectsContext } from "../../../context/type";
 import styles from "./Projects.module.css";
 import { CreateProjectContext } from "../../../context/CreateProject.context";
+import { IProjectsContext } from "../../../context/interface";
+import { IcarusApiProjectService } from "../../../service/icarus-api/project";
 
-export const CreateProjectWrapper: React.FC = ({}) => {
+export const CreateProjectDialog: React.FC = ({}) => {
   const createProjectForm = React.useRef<HTMLFormElement>(null);
   const createProjectDialog = React.useRef<HTMLDialogElement>(null);
 
   const { userGithubRepositories, user } = React.useContext(
     ProjectsContext
-  ) as TProjectsContext;
+  ) as IProjectsContext;
 
   const [createProjectDto, setCreateProjectDto] =
     React.useState<CreateProjectDto>({
@@ -22,6 +22,7 @@ export const CreateProjectWrapper: React.FC = ({}) => {
       description: "",
       githubRepoSlug: undefined,
     });
+
   const resetForm = React.useCallback(() => {
     createProjectForm.current?.reset();
     setCreateProjectDto({
@@ -30,6 +31,7 @@ export const CreateProjectWrapper: React.FC = ({}) => {
       githubRepoSlug: undefined,
     });
   }, [createProjectForm, setCreateProjectDto]);
+
   const onChangeRepositorySelect = React.useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedRepo = userGithubRepositories?.find(
@@ -48,10 +50,11 @@ export const CreateProjectWrapper: React.FC = ({}) => {
 
   const handleSubmit = React.useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
-      const createProjectResponse = await createProjectApi({
-        ...createProjectDto,
-        githubProfileId: user.githubProfile?.id || undefined,
-      });
+      const createProjectResponse =
+        await new IcarusApiProjectService().createProject({
+          ...createProjectDto,
+          githubProfileId: user.githubProfile?.id || undefined,
+        });
       if (!createProjectResponse.ok) {
         const createProject = await createProjectResponse.json();
         return;
@@ -63,6 +66,7 @@ export const CreateProjectWrapper: React.FC = ({}) => {
     [createProjectDto, user, resetForm]
   );
 
+  // TODO: update dialog to Dialog component
   return (
     <div>
       <Button.Secondary

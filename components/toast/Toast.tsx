@@ -5,7 +5,7 @@ import { TInfo } from "./type";
 import React from "react";
 import { useRouter } from "next/router";
 
-export const InfoToast = () => {
+export const Toast = () => {
   const [type, setType] = React.useState<TInfo | null>(null);
   const [message, setMessage] = React.useState<string>("");
   const [showToast, setShowToast] = React.useState(false);

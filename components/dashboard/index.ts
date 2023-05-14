@@ -1,4 +1,4 @@
 export * from "./settings";
 export * from "./tasks";
 export * from "./projects";
-export * from "./projects/CreateProjectWrapper";
+export * from "./projects/Dialog";

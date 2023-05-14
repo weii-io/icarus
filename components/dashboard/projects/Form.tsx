@@ -1,12 +1,15 @@
 import React from "react";
 import { CreateProjectContext, ProjectsContext } from "../../../context";
-import { TCreateProjectContext, TProjectsContext } from "../../../context/type";
 import { CreateProjectDto } from "../../../service/dto";
 import { Input } from "../../input";
 import { Icon } from "../../Icon";
 import { Spacer } from "../../Spacer";
 import { Button } from "../../button";
 import { Spinner } from "../../Spinner";
+import {
+  ICreateProjectContext,
+  IProjectsContext,
+} from "../../../context/interface";
 
 export const CreateProjectForm: React.FC = () => {
   const {
@@ -14,11 +17,11 @@ export const CreateProjectForm: React.FC = () => {
     setCreateProjectDto,
     handleSubmit,
     onChangeRepositorySelect,
-  } = React.useContext(CreateProjectContext) as TCreateProjectContext;
+  } = React.useContext(CreateProjectContext) as ICreateProjectContext;
 
   const { userGithubRepositories } = React.useContext(
     ProjectsContext
-  ) as TProjectsContext;
+  ) as IProjectsContext;
 
   const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

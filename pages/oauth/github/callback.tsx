@@ -1,9 +1,7 @@
 import { GetServerSidePropsContext } from "next";
 import React from "react";
-import {
-  createGithubProfileApi,
-  getGithubAccessTokenApi,
-} from "../../../service";
+import { GithubApiService } from "../../../service/github";
+import { IcarusApiGithubProfileService } from "../../../service/icarus-api/github-profile";
 
 type Props = {};
 
@@ -15,9 +13,9 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   const { code } = context.query;
-  const getGithubAccessTokenResponse = await getGithubAccessTokenApi(
-    code as string
-  );
+  const getGithubAccessTokenResponse = await new GithubApiService(
+    ""
+  ).getAccessToken(code as string);
 
   if (!getGithubAccessTokenResponse.ok) {
     // set cookie error message unable to connect to github, please contact me@weii.io
@@ -26,10 +24,11 @@ export const getServerSideProps = async (
 
   const { access_token } = await getGithubAccessTokenResponse.json();
 
-  const createGithubProfileResponse = await createGithubProfileApi(
-    { accessToken: access_token },
-    context.req.headers.cookie as string
-  );
+  const createGithubProfileResponse =
+    await new IcarusApiGithubProfileService().createGithubProfile(
+      access_token,
+      context.req.headers.cookie as string
+    );
 
   if (!createGithubProfileResponse.ok) {
     console.log(createGithubProfileResponse);

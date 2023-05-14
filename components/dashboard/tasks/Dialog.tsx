@@ -3,15 +3,15 @@ import React, { FormEvent } from "react";
 import styles from "./Tasks.module.css";
 import { Project } from "../../../interface";
 import { CreateTaskDto } from "../../../service/dto";
-import { CreateTaskForm } from "./CreateTaskForm";
 import { CreateTaskContext } from "../../../context";
-import { createTaskApi } from "../../../service";
+import { CreateTaskForm } from "./Form";
+import { IcarusApiTaskService } from "../../../service/icarus-api/task";
 
 type Props = {
   project?: Project;
 };
 
-export const CreateTaskWrapper: React.FC<Props> = (props) => {
+export const CreateTaskDialog: React.FC<Props> = (props) => {
   const createTaskDialog = React.useRef<HTMLDialogElement>(null);
   const [createTaskDto, setCreateTaskDto] = React.useState<CreateTaskDto>({
     name: "",
@@ -23,7 +23,7 @@ export const CreateTaskWrapper: React.FC<Props> = (props) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const createTaskResponse = await createTaskApi(createTaskDto);
+      await new IcarusApiTaskService().createTask(createTaskDto);
       setCreateTaskDto({
         name: "",
         description: "",
@@ -34,6 +34,7 @@ export const CreateTaskWrapper: React.FC<Props> = (props) => {
     } catch (context: any) {}
   };
 
+  // TODO: update dialog to Dialog component
   return (
     <div>
       <Button.Secondary onClick={() => createTaskDialog.current?.showModal()}>
