@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon } from "../Icon";
-import styles from "./InfoToast.module.css";
+import styles from "./Toast.module.css";
 import { ToastProps } from "./type";
 
 export const Success = (props: ToastProps) => {

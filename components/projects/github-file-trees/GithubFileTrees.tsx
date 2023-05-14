@@ -1,13 +1,13 @@
 import React from "react";
 import styles from "./GithubFileTrees.module.css";
 import { Branch, GithubProfile, GithubTree } from "../../../interface";
-import { getGithubBlob, getGithubRepositoryTree } from "../../../service";
 import { GithubFileTreesContext } from "../../../context";
 import { Icon } from "../../Icon";
 import { Spacer } from "../../Spacer";
 import { DirectoryPath } from "./DirectoryPath";
 import { sortGithubTree } from "./utils";
 import { CodeContent } from "./CodeContent";
+import { GithubApiRepositoryService } from "../../../service/github/repository";
 
 type Props = {
   branch: string;
@@ -38,35 +38,51 @@ export const GithubFileTrees = (props: Props) => {
   };
 
   const onClickBlobDirectoryHandler = (tree: GithubTree) => {
-    setDirectory([
-      ...directory.slice(0, directory.length - 1),
-      {
-        name: tree.path,
-        sha: tree.sha,
-        type: tree.type,
-      },
-    ]);
-    getGithubBlob(props.repoSlug, tree.sha).then(async (response) => {
-      const data = await response.json();
-      if (data.content === "")
-        setBlob(Buffer.from("This file is empty").toString("base64"));
-      else setBlob(data.content);
-    });
+    if (directory[directory.length - 1].type === "blob")
+      setDirectory([
+        ...directory.slice(0, directory.length - 1),
+        {
+          name: tree.path,
+          sha: tree.sha,
+          type: tree.type,
+        },
+      ]);
+    else
+      setDirectory([
+        ...directory,
+        {
+          name: tree.path,
+          sha: tree.sha,
+          type: tree.type,
+        },
+      ]);
+    new GithubApiRepositoryService(
+      props.repoSlug,
+      props.githubProfile.accessToken
+    )
+      .getBlob(tree.sha)
+      .then(async (response) => {
+        const data = await response.json();
+        if (data.content === "")
+          setBlob(Buffer.from("This file is empty").toString("base64"));
+        else setBlob(data.content);
+      });
   };
 
   React.useEffect(() => {
     if (directory[directory.length - 1].type === "tree") {
       // get github tree
-      getGithubRepositoryTree(
-        directory[directory.length - 1].sha,
-        props.githubProfile,
-        props.repoSlug
-      ).then(async (response) => {
-        if (response.ok) {
-          const data = await response.json();
-          setTrees(sortGithubTree(data.tree));
-        }
-      });
+      new GithubApiRepositoryService(
+        props.repoSlug,
+        props.githubProfile.accessToken
+      )
+        .getTrees(directory[directory.length - 1].sha)
+        .then(async (response) => {
+          if (response.ok) {
+            const data = await response.json();
+            setTrees(sortGithubTree(data.tree));
+          }
+        });
       // set blob to empty
       setBlob("");
     }

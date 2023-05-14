@@ -12,9 +12,9 @@ type TProps = {
 };
 
 const Tabs = [
-  <Tab.Projects key="projects" />,
-  <Tab.Tasks key="tasks" />,
-  <Tab.Settings key="settings" />,
+  <Tab.Projects key="projects" tabKey="projects" />,
+  <Tab.Tasks key="tasks" tabKey="tasks" />,
+  <Tab.Settings key="settings" tabKey="settings" />,
 ];
 
 export const AsideMenu: React.FC<TProps> = React.memo(({ currentTab }) => {

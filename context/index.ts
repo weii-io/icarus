@@ -4,3 +4,4 @@ export * from "./Projects.context";
 export * from "./CreateProject.context";
 export * from "./CreateTask.context";
 export * from "./GithubFileTrees.context";
+export * from "./Register.context";

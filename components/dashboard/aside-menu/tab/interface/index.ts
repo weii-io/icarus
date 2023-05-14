@@ -1,3 +1,3 @@
 export interface IBaseTabProps {
-  key: string;
+  tabKey: string;
 }

@@ -4,10 +4,9 @@ import styles from "./AsideMenu.module.css";
 import { TTabKey, Tab } from "./aside-menu.type";
 import { useRouter } from "next/router";
 import { Button } from "../../button";
-import { logoutUserApi } from "../../../service";
 import { Icon } from "../../Icon";
-import { Spinner } from "../../Spinner";
 
+// TODO: refactor this file
 type Props = {
   currentTab: TTabKey;
   projectId: number;
@@ -53,41 +52,16 @@ export const AsideMenu: React.FC<Props> = React.memo(
       },
     ];
 
-    const [targetPath, setTargetPath] = React.useState("");
-    const [loading, setLoading] = React.useState(false);
     const router = useRouter();
-
-    React.useEffect(() => {
-      router.events.on("routeChangeStart", () => {
-        setLoading(true);
-      });
-      router.events.on("routeChangeComplete", () => {
-        setLoading(false);
-      });
-
-      return () => {
-        router.events.off("routeChangeStart", () => {
-          setLoading(true);
-        });
-        router.events.off("routeChangeComplete", () => {
-          setLoading(false);
-        });
-      };
-    }, [router]);
 
     return (
       <>
         <ul className={styles.container}>
           {Tabs.map(({ key, icon, label, path }) => (
             <li key={key} className={key === currentTab ? styles.active : ""}>
-              <Link onClick={() => setTargetPath(path)} href={path}>
+              <Link href={path}>
                 {icon}
                 <span>{label}</span>
-                <Spinner
-                  visible={targetPath === path && loading}
-                  size={16}
-                  color="#fff"
-                />
               </Link>
             </li>
           ))}

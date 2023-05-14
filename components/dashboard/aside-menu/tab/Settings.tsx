@@ -6,14 +6,14 @@ import { IDashboardAsideMenuContext } from "../context/interface";
 import { Icon } from "../../../Icon";
 import { IBaseTabProps } from "./interface";
 
-export const Settings = ({ key }: IBaseTabProps) => {
+export const Settings = ({ tabKey }: IBaseTabProps) => {
   const path = "/dashboard?tab=settings";
   const { setTargetPath, currentTab } = React.useContext(
     DashboardAsideMenuContext
   ) as IDashboardAsideMenuContext;
 
   return (
-    <li className={currentTab === key ? styles.active : ""}>
+    <li className={currentTab === tabKey ? styles.active : ""}>
       <Link onClick={() => setTargetPath(path)} href={path}>
         <Icon
           height={16}

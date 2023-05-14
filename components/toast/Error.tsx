@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./InfoToast.module.css";
+import styles from "./Toast.module.css";
 import { Icon } from "../Icon";
 import { ToastProps } from "./type";
 
