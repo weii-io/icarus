@@ -70,6 +70,7 @@ const FormSubmitHandler = async (
   const loginUserResponse = await new IcarusApiAuthService().login(payload);
   if (!loginUserResponse.ok) {
     const { message } = await loginUserResponse.json();
+    console.log(loginUserResponse);
     // Create cookie with error message
     // Validation error
     // Create cookie with error message

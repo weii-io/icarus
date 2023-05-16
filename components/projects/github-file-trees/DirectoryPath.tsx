@@ -1,15 +1,15 @@
 import React from "react";
 import { GithubFileTreesContext } from "../../../context";
-import { TGithubFileTreesContext } from "../../../context/type";
 import classNames from "classnames";
 import styles from "./DirectoryPath.module.css";
 import { Spacer } from "../../Spacer";
 import { Icon } from "../../Icon";
+import { IGithubFileTreesContext } from "../../../context/interface";
 
 export const DirectoryPath = () => {
   const { directory, setDirectory } = React.useContext(
     GithubFileTreesContext
-  ) as TGithubFileTreesContext;
+  ) as IGithubFileTreesContext;
 
   return (
     <ul className={classNames("row", styles.container)}>
