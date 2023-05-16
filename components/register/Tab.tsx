@@ -2,16 +2,15 @@ import React from "react";
 import classNames from "classnames";
 import styles from "../../styles/Register.module.css";
 
-type Props = {
+type TProps = {
   icon: React.ReactNode;
   title: string;
   description: string;
-
   index: number;
   activeIndex: number;
 };
 
-export const Tab: React.FC<Props> = (props: Props) => {
+export const Tab: React.FC<TProps> = (props: TProps) => {
   return (
     <div
       className={classNames({

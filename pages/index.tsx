@@ -66,16 +66,4 @@ const Home: NextPage = () => {
   );
 };
 
-export const getServerSideProps = async (context: any) => {
-  /** middleware */
-  // const publicRouteMiddleware = await PublicRouteMiddleware(context);
-  // if (publicRouteMiddleware.redirect) {
-  //   return publicRouteMiddleware;
-  // }
-
-  return {
-    props: {},
-  };
-};
-
 export default Home;

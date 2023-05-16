@@ -1,13 +1,13 @@
 import React from "react";
 import { Project, Task } from "../../../interface";
-import { getProjectByIdApi, getTasksApi } from "../../../server";
 import { Layout } from "../../../components";
-import styles from "../../../styles/Project.module.css";
-import Link from "next/link";
 import { AsideMenu } from "../../../components/projects/aside-menu";
 import { TTabKey } from "../../../components/projects/aside-menu/aside-menu.type";
 import { useRouter } from "next/router";
 import { GithubFileTrees } from "../../../components/projects";
+import { IcarusApiProjectService } from "../../../service/icarus-api/project";
+import { IcarusApiTaskService } from "../../../service/icarus-api/task";
+import styles from "../../../styles/Projects.module.css";
 
 type Props = {
   project: Project;
@@ -49,17 +49,21 @@ function Project(props: Props) {
 
 export const getServerSideProps = async (context: any) => {
   const { req } = context;
-  const getProjectByIdReponse = await getProjectByIdApi(
-    context.params.id,
-    req.headers.cookie
-  );
+  const getProjectByIdReponse =
+    await new IcarusApiProjectService().getProjectById(
+      context.params.id,
+      req.headers.cookie
+    );
   if (!getProjectByIdReponse.ok) {
     return {
       notFound: true,
     };
   }
   const project = await getProjectByIdReponse.json();
-  const getTasksResponse = await getTasksApi(project.id, req.headers.cookie);
+  const getTasksResponse = await new IcarusApiTaskService().getTaskByProjectId(
+    project.id,
+    req.headers.cookie
+  );
   const tasks = await getTasksResponse.json();
   return {
     props: {

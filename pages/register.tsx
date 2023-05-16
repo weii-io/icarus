@@ -1,16 +1,17 @@
 import type { GetServerSidePropsContext, NextPage } from "next";
 import React from "react";
 import { NextRouter, useRouter } from "next/router";
-import { setCookie, parseCookies, destroyCookie } from "nookies";
 
 import { PasswordStrengthChecker, Tab } from "../components/register";
-import { Icon, Layout, Spacer } from "../components";
+import { Icon, Layout } from "../components";
 import styles from "../styles/Register.module.css";
-import { createUserApi } from "../server";
 import { Button } from "../components/button";
 import { Input } from "../components/input";
 import { setInfoCookie } from "../utils";
-import { GOOGLE_OAUTH2_URL } from "../constant/google-oauth-url";
+import { IcarusApiAuthService } from "../service/icarus-api/auth";
+import { RegisterContext } from "../context";
+import { YourDetails } from "../components/register/form-fragment/YourDetails";
+import { ChooseAPassword } from "../components/register/form-fragment/ChooseAPassword";
 
 interface CreateUserPayload {
   firstName: string;
@@ -22,14 +23,13 @@ interface CreateUserPayload {
 
 const Register: NextPage = () => {
   const [activeTab, setActiveTab] = React.useState(0);
-  const [createUserPayload, setCreateUserPayload] =
-    React.useState<CreateUserPayload>({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
+  const [payload, setPayload] = React.useState<CreateUserPayload>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   const form = React.useRef<HTMLFormElement>(null);
   const router = useRouter();
@@ -38,147 +38,12 @@ const Register: NextPage = () => {
     {
       title: "Your details",
       description: "Please provide your name and email",
-      form: (
-        <>
-          <h1>Your details</h1>
-          <p>Please provide your name and email.</p>
-          <br />
-          <div>
-            <div>
-              <Input.Text
-                value={createUserPayload.firstName}
-                id={"firstName"}
-                autoComplete="given-name"
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                label="First name"
-                required={true}
-              />
-            </div>
-            <div>
-              <Input.Text
-                value={createUserPayload.lastName}
-                id={"lastName"}
-                autoComplete="family-name"
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                label="Last name"
-                required={true}
-              />
-            </div>
-            <div>
-              <Input.Email
-                label="Email"
-                value={createUserPayload.email}
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-              />
-            </div>
-            <br />
-            <Button.Secondary
-              type="button"
-              onClick={() => {
-                // validation before continuing to next tab
-                // validate first name is not empty
-                // validate last name is not empty
-                // validate email is not empty
-                // validate email is valid
-                if (form.current?.reportValidity()) setActiveTab(activeTab + 1);
-              }}
-            >
-              Continue
-            </Button.Secondary>
-          </div>
-        </>
-      ),
+      content: <YourDetails />,
     },
     {
       title: "Choose a password",
       description: "Must be at least 8 characters",
-      form: (
-        <>
-          <h1>choose a password</h1>
-          <p>Must be at least 8 characters</p>
-          <br />
-          <div>
-            {/* fix for [DOM Warning] Password forms should have (optionally hidden) username fields for accessibility" in console even with hidden username field */}
-            <input hidden type="text" autoComplete="username" />
-            <div>
-              <Input.Password
-                label="Password"
-                value={createUserPayload.password}
-                onChange={(event) =>
-                  InputChangeHandler(event, setCreateUserPayload)
-                }
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_!@#$%^&*])[A-Za-z\d_!@#$%^&*]{8,}$"
-                onInvalid={(event) => {
-                  if (event.currentTarget.validity.patternMismatch)
-                    event.currentTarget.setCustomValidity(
-                      "Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character"
-                    );
-                }}
-                onInput={(event) => {
-                  event.currentTarget.setCustomValidity("");
-                }}
-                required={true}
-              />
-            </div>
-            <PasswordStrengthChecker password={createUserPayload.password} />
-            <br />
-            <div>
-              <Input.Password
-                id="confirmPassword"
-                label="Confirm password"
-                value={createUserPayload.confirmPassword}
-                onChange={(event) => {
-                  InputChangeHandler(event, setCreateUserPayload);
-                  if (
-                    event.currentTarget.value !== createUserPayload.password
-                  ) {
-                    event.currentTarget.setCustomValidity(
-                      "Passwords do not match"
-                    );
-                  } else {
-                    event.currentTarget.setCustomValidity("");
-                  }
-                }}
-                onInput={(event) => {
-                  event.currentTarget.setCustomValidity("");
-                }}
-                required={true}
-              />
-            </div>
-            <br />
-            <div className="row">
-              <Button.Secondary
-                style={{
-                  width: "100px",
-                  marginRight: "4px",
-                }}
-                type="button"
-                onClick={() => setActiveTab(activeTab - 1)}
-              >
-                back
-              </Button.Secondary>
-              <Button.Primary
-                type="submit"
-                onClick={() => {
-                  // validation before continuing to next tab
-                  // validate password is not empty
-                  // validate password is at least 8 characters
-                  // validate password matches confirm password
-                  if (!form.current?.reportValidity()) return false;
-                }}
-              >
-                Create account
-              </Button.Primary>
-            </div>
-          </div>
-        </>
-      ),
+      content: <ChooseAPassword />,
     },
   ];
 
@@ -211,15 +76,23 @@ const Register: NextPage = () => {
             ))}
           </div>
         </div>
-        <form
-          onSubmit={(event) =>
-            FormSubmitHandler(event, createUserPayload, router)
-          }
-          className={styles.rightPanel}
-          ref={form}
+        <RegisterContext.Provider
+          value={{
+            form,
+            payload,
+            setPayload,
+            activeTab,
+            setActiveTab,
+          }}
         >
-          {tabs[activeTab].form}
-        </form>
+          <form
+            onSubmit={(event) => FormSubmitHandler(event, payload, router)}
+            className={styles.rightPanel}
+            ref={form}
+          >
+            {tabs[activeTab].content}
+          </form>
+        </RegisterContext.Provider>
       </Layout>
     </div>
   );
@@ -244,7 +117,9 @@ const FormSubmitHandler = async (
 ) => {
   event.preventDefault();
   try {
-    const createUserResponse = await createUserApi(payload);
+    const createUserResponse = await new IcarusApiAuthService().register(
+      payload
+    );
     if (!createUserResponse.ok) {
       const { message } = await createUserResponse.json();
       setInfoCookie({

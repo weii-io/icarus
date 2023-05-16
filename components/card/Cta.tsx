@@ -1,7 +1,8 @@
+import React from "react";
 import styles from "./Card.module.css";
-type Props = {
+type TProps = {
   children: React.ReactNode;
 };
-export const Cta = (props: Props) => {
+export const Cta = (props: TProps) => {
   return <div className={styles.cta}>{props.children}</div>;
 };

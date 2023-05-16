@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { User } from "../../../interface";
 import Dialog from "../../Dialog";
 import React from "react";
