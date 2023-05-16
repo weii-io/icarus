@@ -1,10 +1,10 @@
 import React from "react";
 import { GithubFileTreesContext } from "../../../context";
-import { TGithubFileTreesContext } from "../../../context/type";
+import { IGithubFileTreesContext } from "../../../context/interface";
 export const CodeContent = () => {
   const { blob } = React.useContext(
     GithubFileTreesContext
-  ) as TGithubFileTreesContext;
+  ) as IGithubFileTreesContext;
   if (!blob) return null;
   return (
     <pre>
