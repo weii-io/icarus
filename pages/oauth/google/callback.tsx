@@ -27,7 +27,7 @@ export const getServerSideProps = async (
     .getUserInfo(access_token)
     .then((response) => response.json())) as GoogleProfile;
 
-  await new IcarusApiAuthService().register({
+  const registerUserResponse = await new IcarusApiAuthService().register({
     email: email,
     firstName: given_name,
     lastName: name,
