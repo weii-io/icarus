@@ -8,8 +8,9 @@
 }
 
 :root {
-  --primary-background: #fff;
-  --secondary-background: #000;
+  --primary: #fff;
+  --secondary: #000;
+  --tertiary: #36454f;
   --inactive: #acafb3;
 }
 
