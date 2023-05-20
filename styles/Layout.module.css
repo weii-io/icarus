@@ -8,11 +8,11 @@
 
 /* left panel */
 .layout > :first-child {
-  background-color: var(--secondary-background);
+  background-color: var(--secondary);
   color: white;
 }
 
 /* right panel */
 .layout > :last-child {
-  background-color: var(--primary-background);
+  background-color: var(--primary);
 }
