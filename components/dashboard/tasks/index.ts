@@ -1,2 +1,2 @@
 export * from "./Tasks";
-export * from "./CreateTaskWrapper";
+export * from "./Dialog";

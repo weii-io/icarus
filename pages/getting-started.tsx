@@ -5,6 +5,7 @@ import React from "react";
 import { Tab } from "../components/register";
 import { Icon, Layout } from "../components";
 
+// TODO: integrate this page into the projects
 interface CreateProjectPayload {
   name: string;
   description: string;

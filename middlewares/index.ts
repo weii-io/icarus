@@ -1,2 +1,2 @@
-export * from "./protected-route";
-export * from "./public-route";
+export * from "./protected-route.middleware";
+export * from "./public-route.middleware";

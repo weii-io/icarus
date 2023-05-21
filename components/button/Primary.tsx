@@ -1,8 +1,11 @@
+import React from "react";
 import classNames from "classnames";
 import styles from "./Button.module.css";
-import { BaseButtonProps } from "./button.interface";
+import { TBaseButtonProps } from "./button.type";
 
-export const Primary: React.FC<BaseButtonProps> = (props: BaseButtonProps) => {
+export const Primary: React.FC<TBaseButtonProps> = (
+  props: TBaseButtonProps
+) => {
   return (
     <button
       {...props}
