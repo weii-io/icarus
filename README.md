@@ -1,3 +1,6 @@
+### Note:
+Project will be discontinued as I realize that we can replace a lot of those stuff through github issues and collaboration work flow
+
 # Icarus
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
